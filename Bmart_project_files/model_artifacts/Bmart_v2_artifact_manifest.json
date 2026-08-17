@@ -1,0 +1,33 @@
+{
+  "artifact_schema_version": "1.1.0",
+  "files": {
+    "Bmart_v2_point_model.cbm": {
+      "sha256": "f2663f574415e906ffbe4b3bc71b56662220772ac7566e7258def8f9651ae1b2",
+      "size_bytes": 10375748
+    },
+    "Bmart_v2_quantile_p90.cbm": {
+      "sha256": "87aacf413b5e867f7e505b98af9570d0ba0522f2abc4f1c8d24e9e49c46a2ced",
+      "size_bytes": 8083004
+    },
+    "Bmart_v2_quantile_p95.cbm": {
+      "sha256": "885d77f9a589b2c82ba810fd1b1525215f25c46b3e4e87b04f6a3cd2d0cd1f78",
+      "size_bytes": 6459900
+    },
+    "Bmart_v2_leadtime_quantile_p90.cbm": {
+      "sha256": "76885de78c0db8515a3ca7901746870acb4fb0e2897a57717c129af43b13771d",
+      "size_bytes": 6243656
+    },
+    "Bmart_v2_leadtime_quantile_p95.cbm": {
+      "sha256": "10fbd722a2f255d9b598056f9ca238c13318b4ad60201c5e0698b5be1c64fe7e",
+      "size_bytes": 5192704
+    },
+    "Bmart_v2_model_config.json": {
+      "sha256": "e297d776d0f7335625f5f2292daaaecc945686e1db51a3174320f10df72e7ffe",
+      "size_bytes": 19263
+    },
+    "Bmart_v2_leadtime_calibration_residuals.csv": {
+      "sha256": "fca2c2004eaea56930cc33f877d61675ba3d4876883aaefb545bc4cc6a856ddd",
+      "size_bytes": 2005799
+    }
+  }
+}

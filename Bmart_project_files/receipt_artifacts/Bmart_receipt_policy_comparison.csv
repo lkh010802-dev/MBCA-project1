@@ -1,0 +1,3 @@
+﻿policy,total_order_qty,orders_with_positive_qty,duplicate_order_avoided_qty,projected_shortage_to_target
+기존 권장 발주,110579,2157,0,0.0
+입고예정 반영 발주,48511,1040,62068,0.0

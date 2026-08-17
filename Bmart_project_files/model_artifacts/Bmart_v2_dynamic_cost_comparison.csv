@@ -1,0 +1,4 @@
+﻿policy,fixed_order_cost,purchase_cost,holding_cost,shortage_cost,total_cost,currency
+기존 7일 평균 판매량,,,,,,
+누적수요 V2 P90,,,,,,
+누적수요 V2 P95,,,,,,

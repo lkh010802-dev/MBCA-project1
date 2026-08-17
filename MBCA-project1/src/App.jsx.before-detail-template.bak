@@ -1,0 +1,243 @@
+import { useMemo, useState } from 'react'
+import './App.css'
+import bmartRealData from './data/bmartRealData.json'
+import { inventoryByStore as aInventoryByStore, modelMetrics, products, summaryByMart } from './data/mockData'
+
+// 왼쪽 사이드바에 표시할 메뉴 목록입니다.
+const menu = [
+  ['dashboard', '⌂', '대시보드'],
+  ['risk', '!', '품절 위험'],
+  ['inventory', '◇', '재고 현황'],
+  ['analysis', '⌁', '수요 분석'],
+  ['orders', '▤', '발주 관리'],
+]
+
+// 수량과 금액을 한국식 천 단위 구분으로 보여줍니다.
+const number = (value) => new Intl.NumberFormat('ko-KR').format(value)
+
+// A마트 목업과 B마트 실제 서비스 결과를 하나의 상품 목록으로 합칩니다.
+const dashboardProducts = [...products.filter((item) => item.mart === 'A'), ...bmartRealData.products]
+const summaryDataByMart = { A: summaryByMart.A, B: bmartRealData.summary }
+const inventoryDataByMart = { A: aInventoryByStore, B: bmartRealData.inventoryByStore }
+
+// A마트는 원화, B마트 원본 가격은 달러 단위로 표시합니다.
+const formatCurrency = (value, mart) => mart === 'B'
+  ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value)
+  : `${number(Math.round(value))}원`
+
+const shortageOf = (item) => item.shortage ?? Math.max(item.demand + item.safety - item.stock, 0)
+
+function RiskBadge({ risk }) {
+  return <span className={`risk-badge risk-${risk}`}>{risk}</span>
+}
+
+function MiniLineChart({ actual, forecast }) {
+  const width = 360
+  const height = 180
+  const padding = { top: 12, right: 12, bottom: 34, left: 42 }
+  const all = [...actual, ...forecast]
+  const min = Math.floor((Math.min(...all) - 10) / 10) * 10
+  const max = Math.ceil((Math.max(...all) + 10) / 10) * 10
+  const plotWidth = width - padding.left - padding.right
+  const plotHeight = height - padding.top - padding.bottom
+  const yTicks = [max, Math.round((max + min) / 2), min]
+  const xTicks = [
+    { index: 0, label: 'D-11' },
+    { index: 5, label: 'D-6' },
+    { index: actual.length - 1, label: '오늘' },
+  ]
+
+  // 실제값과 예측값을 SVG 좌표로 변환합니다.
+  const points = (values) => values.map((value, index) => {
+    const x = padding.left + (index * plotWidth) / (values.length - 1)
+    const y = padding.top + ((max - value) / (max - min)) * plotHeight
+    return `${x},${y}`
+  }).join(' ')
+
+  return (
+    <svg className="line-chart" viewBox={`0 0 ${width} ${height}`} role="img" aria-label="최근 12일 실제 수요와 예측 수요 비교">
+      <title>가로축은 최근 12일, 세로축은 일별 수요량(개)입니다.</title>
+      {yTicks.map((tick) => {
+        const y = padding.top + ((max - tick) / (max - min)) * plotHeight
+        return <g key={tick}><line x1={padding.left} y1={y} x2={width - padding.right} y2={y} className="chart-grid" /><text x={padding.left - 7} y={y + 3} textAnchor="end" className="chart-tick">{tick}</text></g>
+      })}
+      {xTicks.map(({ index, label }) => {
+        const x = padding.left + (index * plotWidth) / (actual.length - 1)
+        return <text key={label} x={x} y={height - 17} textAnchor={index === 0 ? 'start' : index === actual.length - 1 ? 'end' : 'middle'} className="chart-tick">{label}</text>
+      })}
+      <line x1={padding.left} y1={padding.top} x2={padding.left} y2={height - padding.bottom} className="chart-axis" />
+      <line x1={padding.left} y1={height - padding.bottom} x2={width - padding.right} y2={height - padding.bottom} className="chart-axis" />
+      <polyline points={points(actual)} className="actual-line" />
+      <polyline points={points(forecast)} className="forecast-line" />
+      <text x="12" y={padding.top + plotHeight / 2} textAnchor="middle" className="chart-axis-title" transform={`rotate(-90 12 ${padding.top + plotHeight / 2})`}>수요량(개)</text>
+      <text x={padding.left + plotWidth / 2} y={height - 2} textAnchor="middle" className="chart-axis-title">최근 12일</text>
+    </svg>
+  )
+}
+
+function Sidebar({ active, setActive, mart, setMart, onOpenModel }) {
+  return (
+    <aside className="sidebar">
+      <div className="brand"><span className="brand-icon">▦</span><span>SmartOrder</span></div>
+      <nav>
+        {menu.map(([key, icon, label]) => (
+          <button key={key} className={active === key ? 'nav-item active' : 'nav-item'} onClick={() => setActive(key)}>
+            <span className="nav-icon">{icon}</span>{label}
+          </button>
+        ))}
+      </nav>
+      <div className="sidebar-bottom">
+        <p>마트 선택</p>
+        <div className="mart-switch">
+          {['A', 'B'].map((item) => <button key={item} className={mart === item ? 'selected' : ''} onClick={() => setMart(item)}>{item}마트</button>)}
+        </div>
+        <button className="model-link" onClick={onOpenModel}>▥ 모델 성능 보기 <span>›</span></button>
+      </div>
+    </aside>
+  )
+}
+
+function SummaryCards({ summary }) {
+  // 요약 데이터 한 건을 카드 한 장으로 바꾸기 위한 표시 설정입니다.
+  const cards = [
+    ['오늘의 예측 수요', number(summary.demand), '개', '↗', summary.demandTrend ?? '전일 대비 +8.3%', 'purple'],
+    ['긴급 발주 필요 상품 수', number(summary.urgent), '개', '!', summary.urgentTrend ?? '전일 대비 +5개', 'red'],
+    ['권장 발주 총량', number(summary.orderQty), '개', '◇', summary.orderTrend ?? '전일 대비 +12.5%', 'blue'],
+    ['적정 재고 비율', summary.healthyRate, '%', '◔', summary.healthyTrend ?? '전일 대비 +4.2%p', 'green'],
+  ]
+  return <section className="summary-grid">{cards.map(([label, value, unit, icon, trend, color]) => (
+    <article className="summary-card" key={label}>
+      <div className={`summary-icon ${color}`}>{icon}</div>
+      <div><p>{label}</p><strong>{value}<small>{unit}</small></strong><span>{trend}</span></div>
+    </article>
+  ))}</section>
+}
+
+function Dashboard({ mart, store, setStore, rows, selected, setSelected, quantities, setQuantities, approvals, approveAll }) {
+  // 품절 위험 카드에서 현재 선택한 등급을 기억합니다.
+  const [riskFilter, setRiskFilter] = useState('전체')
+  const summary = summaryDataByMart[mart]
+  const stores = ['전체 매장', ...new Set(dashboardProducts.filter((p) => p.mart === mart).map((p) => p.store))]
+  const filteredRiskRows = riskFilter === '전체' ? rows : rows.filter((item) => item.risk === riskFilter)
+
+  // 현재 필터에 맞춰 부족 수량, 총 발주량, 총 발주 금액을 다시 계산합니다.
+  const shortage = rows.reduce((sum, item) => sum + shortageOf(item), 0)
+  const totalOrder = rows.reduce((sum, item) => sum + (quantities[item.id] ?? item.orderQty), 0)
+  const totalAmount = rows.reduce((sum, item) => sum + (quantities[item.id] ?? item.orderQty) * item.price, 0)
+  const inventorySummary = mart === 'B'
+    ? {
+        shortage,
+        healthy: rows.filter((item) => item.inventoryStatus === '적정 재고').reduce((sum, item) => sum + item.stock, 0),
+        excess: rows.reduce((sum, item) => sum + (item.excess ?? 0), 0),
+      }
+    : { shortage, healthy: 245, excess: 61 }
+  const storeInventory = inventoryDataByMart[mart].filter((item) => store === '전체 매장' || item.store === store)
+  const inventoryScaleMax = Math.max(...storeInventory.map((item) => Math.sqrt(item.shortage) + Math.sqrt(item.healthy) + Math.sqrt(item.excess)), 1)
+
+  // 발주 수량은 0보다 작아지지 않도록 보호합니다.
+  const updateQty = (id, delta) => setQuantities((current) => ({ ...current, [id]: Math.max(0, (current[id] ?? dashboardProducts.find((p) => p.id === id).orderQty) + delta) }))
+
+  return (
+    <>
+      <header className="page-header"><div><h1>대시보드</h1><span>{summary.asOfLabel ?? '2026.08.14 (금)'}</span>{mart === 'B' && <em className="real-data-badge">실데이터</em>}</div><div className="header-actions"><select value={store} onChange={(e) => setStore(e.target.value)}>{stores.map((s) => <option key={s}>{s}</option>)}</select><button className="refresh" aria-label="새로고침">↻</button></div></header>
+      <SummaryCards summary={summary} />
+      <section className="dashboard-grid">
+        <div className="main-column">
+          <div className="two-column">
+            <article className="panel priority-panel">
+              <div className="panel-header"><h2>발주 우선순위 TOP 5</h2><button>전체 보기 ›</button></div>
+              <div className="table-scroll"><table><thead><tr><th>순위</th><th>상품명</th><th>매장</th><th>긴급도</th><th>예상 부족</th><th>예상 품절일</th></tr></thead><tbody>{rows.slice(0, 5).map((item, index) => <tr key={item.id} className={selected.id === item.id ? 'selected-row' : ''} onClick={() => setSelected(item)}><td>{index + 1}</td><td><b>{item.label}</b><small>{item.product}</small></td><td>{item.store}</td><td><RiskBadge risk={item.risk} /></td><td>{shortageOf(item)}</td><td>{item.stockoutDate}</td></tr>)}</tbody></table></div>
+            </article>
+            <article className="panel reason-panel">
+              <div className="panel-header"><h2>상품별 발주 필요 근거</h2><span className="model-chip">{mart === 'B' ? bmartRealData.model.name : 'XGBoost'}</span></div>
+              <div className="reason-content">
+                <div className="reason-copy"><h3>{selected.label} <span>({selected.store})</span></h3><div className="forecast-tags"><span>예상 품절일: {selected.stockoutDate}</span><span>예상 부족 수량: {shortageOf(selected)}개</span></div><ul><li>최근 수요 추세와 프로모션 효과 반영</li><li>{mart === 'B' ? `P95 목표재고 ${selected.targetStock}개 적용` : `안전재고 ${selected.safety}개 포함`}</li><li>{selected.managementAction ?? `최근 결품 빈도 ${selected.frequency}`}</li></ul></div>
+                <div className="chart-area"><div className="chart-legend"><span className="legend-actual">실제 수요</span><span className="legend-forecast">예측 수요</span></div><MiniLineChart actual={selected.currentSales} forecast={selected.forecast} /></div>
+              </div>
+            </article>
+          </div>
+          <article className="panel order-panel">
+            <div className="panel-header"><h2>권장 발주안 확인 및 조정</h2><span>모델 권장값을 담당자가 최종 조정합니다.</span></div>
+            <div className="order-layout"><div className="table-scroll"><table><thead><tr><th>상품명</th><th>매장</th><th>현재 재고</th><th>권장 발주</th><th>조정 수량</th><th>최종 발주</th><th>발주 금액</th><th>상태</th></tr></thead><tbody>{rows.filter((r) => r.orderQty > 0).slice(0, 4).map((item) => { const qty = quantities[item.id] ?? item.orderQty; return <tr key={item.id}><td><b>{item.label}</b></td><td>{item.store}</td><td>{item.stock}</td><td>{item.orderQty}</td><td><div className="stepper">{[-100, -10, -1].map((step) => <button key={step} onClick={() => updateQty(item.id, step)} aria-label={`${item.label} 수량 ${Math.abs(step)} 감소`}>{step}</button>)}<span>{qty}</span>{[1, 10, 100].map((step) => <button key={step} onClick={() => updateQty(item.id, step)} aria-label={`${item.label} 수량 ${step} 증가`}>+{step}</button>)}</div></td><td>{qty}</td><td>{formatCurrency(qty * item.price, mart)}</td><td className={approvals[item.id] ? 'approved' : 'waiting'}>{approvals[item.id] ? '승인 완료' : '승인 대기'}</td></tr>})}</tbody></table></div><div className="approval-summary"><p>총 발주 금액</p><strong>{formatCurrency(totalAmount, mart)}</strong><p>총 발주 수량</p><b>{number(totalOrder)}개</b><button onClick={approveAll}>발주안 승인하기</button></div></div>
+          </article>
+        </div>
+        <aside className="right-column">
+          <article className="panel risk-panel">
+            <div className="panel-header"><h2>품절 위험</h2><span>{filteredRiskRows.length}개 상품</span></div>
+            <div className="risk-tabs">
+              {['전체', '긴급', '주의', '정상'].map((risk) => <button key={risk} className={riskFilter === risk ? 'active' : ''} aria-pressed={riskFilter === risk} onClick={() => setRiskFilter(risk)}>{risk}</button>)}
+            </div>
+            <div className="risk-list">
+              {filteredRiskRows.slice(0, 5).map((item) => <button key={item.id} onClick={() => setSelected(item)}><span><b>{item.label}</b><small>{item.store}</small></span><RiskBadge risk={item.risk} /><em>{shortageOf(item)}개</em></button>)}
+              {filteredRiskRows.length === 0 && <p className="risk-empty">해당 등급의 상품이 없습니다.</p>}
+            </div>
+          </article>
+          <article className="panel inventory-panel"><div className="panel-header"><h2>재고 현황</h2></div><div className="inventory-stats"><div><span className="stock-dot shortage"></span><p>부족 재고<strong>{number(inventorySummary.shortage)}개</strong></p></div><div><span className="stock-dot healthy"></span><p>적정 재고<strong>{number(inventorySummary.healthy)}개</strong></p></div><div><span className="stock-dot excess"></span><p>과잉 재고<strong>{number(inventorySummary.excess)}개</strong></p></div></div></article>
+          <article className="panel store-chart"><div className="panel-header"><h2>매장별 재고 상태 분포</h2></div><div className="bars">{storeInventory.map((item) => <div className="bar-group" key={item.store}><div className="bar" title={`${item.store}: 부족 ${item.shortage}, 적정 ${item.healthy}, 과잉 ${item.excess}`}><span className="bar-excess" style={{ height: `${(Math.sqrt(item.excess) / inventoryScaleMax) * 100}%` }}></span><span className="bar-healthy" style={{ height: `${(Math.sqrt(item.healthy) / inventoryScaleMax) * 100}%` }}></span><span className="bar-shortage" style={{ height: `${(Math.sqrt(item.shortage) / inventoryScaleMax) * 100}%` }}></span></div><small>{item.store}</small></div>)}</div><div className="bar-legend"><span>● 부족</span><span>● 적정</span><span>● 과잉</span></div></article>
+        </aside>
+      </section>
+    </>
+  )
+}
+
+function Gauge({ label, value, max, display, good = 'high' }) {
+  // 지표별 최대값을 기준으로 게이지가 채워질 비율과 상태 색상을 정합니다.
+  const ratio = Math.min(Math.max(value / max, 0), 1)
+  const score = good === 'low' ? 1 - ratio : ratio
+  const color = score >= 0.75 ? '#43c8bd' : score >= 0.5 ? '#ffb34d' : '#ff6b70'
+  const dash = `${Math.round(ratio * 126)} 126`
+  return <div className="gauge-card"><p>{label}</p><svg viewBox="0 0 120 80" role="img" aria-label={`${label} ${display}`}><path className="gauge-track" d="M20 68 A42 42 0 1 1 100 68" pathLength="126" /><path className="gauge-value" d="M20 68 A42 42 0 1 1 100 68" pathLength="126" style={{ stroke: color, strokeDasharray: dash }} /><circle cx={20 + 80 * ratio} cy={68 - 55 * Math.sin(Math.PI * ratio)} r="3.8" style={{ fill: color }} /><text x="60" y="58" textAnchor="middle">{display}</text></svg></div>
+}
+
+function ModelModal({ open, onClose, mart }) {
+  if (!open) return null
+  // A마트는 비교 모델 결과, B마트는 실제 롤링 검증 평균을 표시합니다.
+  const aBest = modelMetrics.find((item) => item.name === 'XGBoost')
+  const model = mart === 'B'
+    ? bmartRealData.model
+    : { name: 'XGBoost', validation: '날짜 기준 80:20', trainedThrough: '2026.08.14', r2: aBest.r2, rmse: aBest.rmse, mae: aBest.mae, confidence: 0.87 }
+  const isReal = mart === 'B'
+  return <div className="modal-backdrop" role="presentation" onMouseDown={onClose}><section className="model-modal" role="dialog" aria-modal="true" aria-labelledby="model-modal-title" onMouseDown={(event) => event.stopPropagation()}><div className="modal-title"><div><span>{mart}마트 예측 모델 {isReal && '· 실데이터'}</span><h2 id="model-modal-title">모델 성능 요약</h2></div><button onClick={onClose} aria-label="닫기">×</button></div><div className="model-summary"><div><p>적용 모델</p><strong>{model.name}</strong></div><div><p>검증 방식</p><strong>{model.validation}</strong></div><div><p>검증 종료일</p><strong>{model.trainedThrough}</strong></div></div><div className="gauge-grid"><Gauge label="R² 설명력" value={model.r2} max={1} display={`${(model.r2 * 100).toFixed(1)}점`} /><Gauge label="RMSE" value={model.rmse} max={isReal ? 30 : 80} display={model.rmse.toFixed(1)} good="low" /><Gauge label="MAE" value={model.mae} max={isReal ? 20 : 50} display={model.mae.toFixed(1)} good="low" /><Gauge label="예측 신뢰도" value={model.confidence} max={1} display={`${(model.confidence * 100).toFixed(1)}점`} /></div><div className="model-note"><span>✓</span><p><strong>현재 운영 기준을 충족합니다.</strong><br />{isReal ? `P95 정책 기준 서비스 수준 ${model.serviceLevel}%, 품절률 ${model.stockoutRate}%입니다.` : '동일 테스트 구간에서 비교한 모델 중 XGBoost의 오차가 가장 낮았습니다.'}</p></div><p className="modal-footnote">{isReal ? '※ B마트 롤링 검증 3개 구간의 평균 성능과 P95 재고 정책 결과입니다.' : '※ A마트 수치는 현재 목업 데이터이며 최종 모델 결과로 교체됩니다.'}</p></section></div>
+}
+
+function PlaceholderPage({ active }) {
+  const label = menu.find((item) => item[0] === active)?.[2]
+  return <section className="content-page"><div className="content-title"><h1>{label}</h1><p>대시보드 공통 데이터를 기반으로 상세 화면을 확장할 예정입니다.</p></div><article className="panel empty-state"><strong>{label} 화면</strong><p>실제 A·B마트 모델 결과가 확정되면 차트와 필터를 연결합니다.</p></article></section>
+}
+
+function App() {
+  // 화면 이동, 마트·매장 선택, 발주 수량과 승인 상태를 관리하는 공통 상태입니다.
+  const [active, setActive] = useState('dashboard')
+  const [mart, setMart] = useState('A')
+  const [store, setStore] = useState('전체 매장')
+  const [selected, setSelected] = useState(dashboardProducts[0])
+  const [quantities, setQuantities] = useState({})
+  const [approvals, setApprovals] = useState({})
+  const [toast, setToast] = useState('')
+  const [showModel, setShowModel] = useState(false)
+
+  // 선택한 마트와 매장에 해당하는 상품만 대시보드 전체에 전달합니다.
+  const rows = useMemo(() => dashboardProducts.filter((item) => item.mart === mart && (store === '전체 매장' || item.store === store)), [mart, store])
+
+  const changeMart = (next) => {
+    setMart(next)
+    setStore('전체 매장')
+    setSelected(dashboardProducts.find((item) => item.mart === next))
+  }
+
+  const approveAll = () => {
+    // 발주량이 있는 상품을 한 번에 승인하고 잠시 안내 메시지를 띄웁니다.
+    setApprovals(Object.fromEntries(rows.filter((row) => row.orderQty > 0).map((row) => [row.id, true])))
+    setToast(`${mart}마트 발주안이 승인되었습니다.`)
+    window.setTimeout(() => setToast(''), 2400)
+  }
+
+  // 팝업과 토스트는 축소되는 대시보드 바깥에 두어 항상 브라우저 전체를 기준으로 표시합니다.
+  return <>
+    <div className="app-shell"><Sidebar active={active} setActive={setActive} mart={mart} setMart={changeMart} onOpenModel={() => setShowModel(true)} /><main className="app-content">{active === 'dashboard' ? <Dashboard mart={mart} store={store} setStore={setStore} rows={rows} selected={selected} setSelected={setSelected} quantities={quantities} setQuantities={setQuantities} approvals={approvals} approveAll={approveAll} /> : <PlaceholderPage active={active} />}</main></div>
+    <ModelModal open={showModel} onClose={() => setShowModel(false)} mart={mart} />
+    {toast && <div className="toast">✓ {toast}</div>}
+  </>
+}
+
+export default App

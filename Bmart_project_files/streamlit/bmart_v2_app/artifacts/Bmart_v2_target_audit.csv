@@ -1,0 +1,4 @@
+﻿Check,Rows,Ratio_Pct,Interpretation
+Demand < Units Sold,21000,27.631578947368425,Demand를 실제 총수요로 단정하기 어려운 불일치
+Demand = Units Sold,1560,2.0526315789473686,판매량과 동일한 관측
+Demand > Units Sold,53440,70.3157894736842,미충족수요 가능성은 있으나 생성 규칙 미확인

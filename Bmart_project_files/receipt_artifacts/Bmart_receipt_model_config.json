@@ -1,0 +1,30 @@
+{
+  "analysis_name": "Bmart receipt-aware replenishment",
+  "data_origin": "simulation",
+  "service_input": "C:\\Users\\dlrkd\\Documents\\Codex\\2026-08-16\\referenced-chatgpt-conversation-this-is-an\\outputs\\Bmart_v8_run\\Bmart_v2_service_result.csv",
+  "service_input_sha256": "a1d31eba5fccbff774258a3ab51ecf7b05021abbf59132e78bb61f7f959eaa34",
+  "analysis_end_date": "2024-01-30",
+  "policy": {
+    "random_seed": 42,
+    "normal_receipt_weight": 1.0,
+    "delayed_receipt_weight": 0.7,
+    "cancelled_receipt_weight": 0.0,
+    "minimum_supplier_reliability": 0.5,
+    "simulation_delay_probability": 0.18,
+    "simulation_partial_probability": 0.14,
+    "simulation_cancel_probability": 0.02
+  },
+  "inventory_position_formula": "on_hand + effective_incoming - backorders",
+  "leakage_control": "receipts included only when information_available_date <= decision_date",
+  "limitations": [
+    "Simulation is used when actual PO and receipt files are absent.",
+    "Historical inventory snapshots are not a transaction-level inventory ledger.",
+    "Projected shortage is a planning proxy, not proven realized service level.",
+    "Replace simulated supplier behavior with ERP receipt history before production use."
+  ],
+  "versions": {
+    "python": "3.12.13",
+    "pandas": "3.0.1",
+    "numpy": "2.3.5"
+  }
+}

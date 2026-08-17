@@ -1,0 +1,87 @@
+docs에 있는 파일은 V2 모델을 추가 보완한 최종 요약 문서
+
+
+model_artifacts파일들
+1. 실제 AI 모델 파일 .cbm
+파일	역할
+Bmart_v2_point_model.cbm	일반 수요예측 모델. “내일 수요가 몇 개일까?”를 하나의 값으로 예측
+Bmart_v2_quantile_p90.cbm	P90 수요 모델. 품절 위험을 줄이기 위해 여유 있게 수요를 예측
+Bmart_v2_quantile_p95.cbm	P95 수요 모델. P90보다 더 안전하게 재고를 확보하는 모델
+Bmart_v2_leadtime_quantile_p90.cbm	리드타임 기간 누적수요 P90 모델. 발주 후 입고까지 필요한 재고 계산용
+Bmart_v2_leadtime_quantile_p95.cbm	위와 같지만 더 보수적인 P95 모델
+
+2. 모델 설정/관리 파일
+Bmart_v2_model_config.json
+프로젝트에서 상당히 중요한 파일이야. 모델이 어떤 Feature를 사용하는지, categorical feature는 무엇인지, P90/P95 보정값, 재고정책, leadtime 설정 등을 기록해놓은 모델 설명서/설정서. 
+Bmart_v2_artifact_manifest.json
+모델 파일들의 이름, 해시 등을 기록해서 **“지금 사용하는 모델 파일이 올바른 파일인가?”**를 확인하는 관리 파일이야.
+
+3. 모델 성능 검증 파일
+Bmart_v2_rolling_validation.csv
+시간을 앞으로 이동시키면서 Point 모델 성능이 계속 잘 나오는지 검사한 결과. 즉 시계열 교차검증 결과.
+Bmart_v2_quantile_rolling_validation.csv
+P90/P95 모델도 시기에 따라 제대로 목표 Coverage를 유지하는지 검사한 결과. 
+Bmart_v2_quantile_slice_coverage.csv
+P90/P95가 전체에서만 잘 맞는 게 아니라 프로모션/비프로모션 등 특정 구간에서도 제대로 작동하는지 확인하기 위한 결과. 
+Bmart_v2_point_series_performance.csv
+매장×상품 같은 개별 시계열별로 Point 모델 성능을 확인하는 파일. 전체 평균 성능만 좋고 특정 상품은 망가지는 문제를 찾는 용도.
+
+4. 리드타임 모델 검증 파일
+Bmart_v2_leadtime_model_evaluation.csv
+Leadtime P90/P95 모델의 최종 성능 평가 결과.
+Bmart_v2_leadtime_calibration_residuals.csv
+Leadtime Quantile 모델이 얼마나 빗나갔는지를 저장한 오차 기록이야. 이후 Quantile 보정에 사용
+Bmart_v2_leadtime_calibration_selection.csv
+어떤 calibration 설정/기간을 사용하는 게 좋은지 비교해서 선택한 결과
+
+5. 실제 서비스에 사용하는 결과
+Bmart_v2_service_result.csv
+
+6. 재고정책 비교/시뮬레이션
+Bmart_v2_inventory_policy_comparison.csv
+같은 최종 결과가 들어있는 서비스용 결과 데이터
+Bmart_v2_dynamic_policy_comparison.csv
+단순 계산보다 발전해서 시간이 지나면서 재고가 실제로 줄고 발주가 들어오는 상황을 시뮬레이션한 정책 비교 결과
+Bmart_v2_dynamic_simulation_detail.csv
+위 동적 시뮬레이션의 하루하루 상세 결과. 그래서 약 3.7MB로 큰 파일
+Bmart_v2_dynamic_cost_comparison.csv
+각 재고정책을 사용했을 때 재고비용/품절비용 관점에서 어느 정책이 유리한지 비교하기 위한 결과
+
+7. 기타 점검용 파일
+Bmart_v2_monitoring_baseline.csv
+서비스 운영 후 현재 모델 성능이 예전보다 나빠졌는지 비교하기 위한 기준 성능표
+Bmart_v2_target_audit.csv
+Target과 관련된 계산이나 데이터가 정상적인지 확인한 감사/점검 결과
+
+notebooks에 있는 파일들
+Bmart3_edit_improved_final.ipynb: 메인 수요예측·재고최적화 파이프라인의 최종 코드본이야. Feature 생성, 시계열 분할, CatBoost, Quantile, Target 진단 같은 전체 핵심 흐름
+Bmart3_edit_improved_final_executed.ipynb: 위 최종 코드본을 실제로 실행한 결과까지 포함한 증빙용 버전이야. 환경정보, 실행 출력, Target audit 결과
+Bmart_receipt_improvement_colab.ipynb: 기존 모델을 다시 학습하는 게 아니라, 발주 후 아직 안 들어온 입고예정량·부분입고·지연·취소를 재고 포지션에 반영하는 추가 보완 노트북이야. 핵심 목적은 중복 발주를 줄이는 것
+Bmart_receipt_improvement_colab_executed.ipynb: 위 입고 보완 코드를 실제 실행한 버전이야. 품질검사 통과, 입고 완료/취소 현황, 공급처별 리드타임과 정시입고율 같은 결과까지 포함
+개발 기준본: Bmart3_edit_improved_final.ipynb
+발표/검증 증빙: Bmart3_edit_improved_final_executed.ipynb
+입고 로직 확장 코드: Bmart_receipt_improvement_colab.ipynb
+입고 로직 실행 증빙: Bmart_receipt_improvement_colab_executed.ipynb
+
+receipt_artifacts에 있는 파일
+파일	역할
+Bmart_purchase_orders.csv	시뮬레이션으로 만든 전체 발주 원장. 발주일, 예상입고일, 발주수량, 공급처 정보가 들어 있음
+Bmart_receipt_history.csv	실제로 언제 몇 개가 들어왔는지를 나타내는 입고 이력. 부분입고도 기록됨
+Bmart_open_orders.csv	아직 완전히 입고되지 않은 미입고/진행중 발주 목록. open_qty, effective_incoming_qty 등을 계산
+Bmart_receipt_adjusted_order_recommendation.csv	기존 추천 발주량에 입고예정량을 반영해서 다시 계산한 최종 발주 추천 결과
+Bmart_receipt_policy_comparison.csv	기존 발주 방식과 입고예정 반영 방식을 비교한 정책 비교표
+Bmart_receipt_weight_sensitivity.csv	지연 중인 입고를 몇 % 신뢰할지(0%, 50%, 70% 등)에 따라 발주량이 얼마나 변하는지 보는 민감도 분석
+Bmart_supplier_leadtime_summary.csv	공급처별 평균 리드타임, P90 리드타임, 정시입고율, 완전입고율을 정리한 공급처 성과표
+Bmart_receipt_model_config.json	입고 반영 정책의 설정값과 가정, 누수 방지 규칙을 저장한 설정/설명 파일
+
+scripts정리
+파일	역할
+build_bmart_data.py	B마트의 여러 CSV 결과를 읽어서 React 대시보드에서 사용할 JSON 데이터로 변환
+build_receipt_notebook.py	입고/미입고 보완 분석을 수행하는 Colab 노트북 자체를 자동 생성
+
+source_data정리
+B_mart.csv — 원본 데이터셋
+
+스트림잇은 지금 그냥 임시로 한거
+
+Bmart_project_file_manifest.md는 B마트 프로젝트 전체 파일 구조를 설명하는 안내서

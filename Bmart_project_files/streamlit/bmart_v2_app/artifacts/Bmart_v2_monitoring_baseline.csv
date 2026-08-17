@@ -1,0 +1,9 @@
+﻿Scope,Metric,Value,Status
+daily_test,Point_WAPE_Pct,3.540123172812952,ok
+daily_test,Point_Bias_Pct,0.13830152530770343,not_evaluated
+daily_test,P90_Coverage_Pct,90.95604395604396,ok
+daily_test,P95_Coverage_Pct,95.95604395604396,ok
+daily_test,Crossing_Rate_Pct,0.0,ok
+daily_test,Absolute_Bias_Pct,0.13830152530770343,ok
+protection_period_test,P90_Coverage_Pct,90.01149425287356,ok
+protection_period_test,P95_Coverage_Pct,94.25287356321839,ok
