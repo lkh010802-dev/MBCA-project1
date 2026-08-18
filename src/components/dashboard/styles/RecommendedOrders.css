@@ -1,0 +1,334 @@
+/* ==========================================
+   추천 발주안 목록
+   ========================================== */
+
+.recommended-list {
+  width: 100%;
+
+  /*
+   * 대시보드 전체 가로 스크롤 방지
+   * 기존 overflow-x: auto 대신 hidden
+   */
+  overflow-x: hidden;
+  overflow-y: hidden;
+
+  padding: 0 12px 8px;
+
+  box-sizing: border-box;
+}
+
+
+/* ==========================================
+   추천 발주안 행
+   ========================================== */
+
+.recommended-row {
+  /*
+   * 기존 760px 고정 최소 너비 제거
+   * 화면 너비에 맞춰 자연스럽게 축소
+   */
+  min-width: 0;
+
+  /*
+   * 기존 62px → 46px
+   * 하단 285px 패널 안에서 TOP 5가
+   * 모두 보이도록 높이 축소
+   */
+  min-height: 46px;
+
+  padding: 6px 10px;
+
+  display: grid;
+
+  /*
+   * 기존 컬럼 구조 유지
+   * 다만 화면 폭에 맞게 유연하게 축소
+   */
+  grid-template-columns:
+    minmax(120px, 1.5fr)
+    repeat(4, minmax(60px, 0.8fr))
+    minmax(85px, 1fr)
+    minmax(75px, 0.9fr);
+
+  align-items: center;
+
+  gap: 8px;
+
+  border-top: 1px solid #edf0f4;
+
+  box-sizing: border-box;
+}
+
+
+.recommended-row:first-child {
+  border-top: 1px solid #edf0f4;
+}
+
+
+/* ==========================================
+   상품 정보
+   ========================================== */
+
+.recommended-info {
+  min-width: 0;
+}
+
+
+.recommended-product {
+  color: #172131;
+  font-size: 12px;
+  font-weight: 800;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+.recommended-meta {
+  display: flex;
+  gap: 6px;
+
+  margin-top: 2px;
+
+  color: #8a96a6;
+  font-size: 9px;
+
+  white-space: nowrap;
+}
+
+
+/* ==========================================
+   추천 발주 데이터
+   ========================================== */
+
+.recommended-item,
+.recommended-adjust,
+.recommended-final {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  gap: 2px;
+}
+
+
+/* ==========================================
+   항목 라벨
+   ========================================== */
+
+.recommended-label {
+  color: #8a96a6;
+  font-size: 8px;
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+
+/* ==========================================
+   항목 값
+   ========================================== */
+
+.recommended-item strong {
+  color: #465468;
+  font-size: 11px;
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+
+.recommended-item .recommended-qty {
+  color: #172131;
+  font-weight: 800;
+}
+
+
+/* ==========================================
+   발주량 조정 입력
+   ========================================== */
+
+.recommended-adjust .qty-input {
+  width: 78px;
+  height: 28px;
+
+  padding: 0 7px;
+
+  border: 1px solid #d8e0e8;
+  border-radius: 6px;
+
+  text-align: right;
+
+  color: #182230;
+  background: #ffffff;
+
+  box-sizing: border-box;
+}
+
+
+.recommended-adjust .qty-input:focus {
+  outline: none;
+
+  border-color: #94a3b8;
+
+  box-shadow:
+    0 0 0 2px rgba(148, 163, 184, 0.14);
+}
+
+
+/* ==========================================
+   최종 발주량
+   ========================================== */
+
+.recommended-final {
+  align-items: flex-start;
+}
+
+
+.recommended-final .badge {
+  min-height: 21px;
+}
+
+
+/* ==========================================
+   데이터 없음
+   ========================================== */
+
+.recommended-list .empty {
+  padding: 30px 0;
+}
+
+
+/* ==========================================
+   1400px 이하
+   ========================================== */
+
+@media (max-width: 1400px) {
+
+  .recommended-list {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+
+  .recommended-row {
+    grid-template-columns:
+      minmax(110px, 1.4fr)
+      repeat(4, minmax(55px, 0.75fr))
+      minmax(80px, 0.9fr)
+      minmax(70px, 0.8fr);
+
+    gap: 6px;
+
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+
+  .recommended-product {
+    font-size: 11px;
+  }
+
+
+  .recommended-item strong {
+    font-size: 10px;
+  }
+
+
+  .recommended-adjust .qty-input {
+    width: 72px;
+  }
+}
+
+
+/* ==========================================
+   1100px 이하
+   태블릿
+   ========================================== */
+
+@media (max-width: 1100px) {
+
+  /*
+   * 태블릿에서는 컬럼이 좁아질 수 있으므로
+   * 내부 목록만 가로 스크롤 허용
+   *
+   * 페이지 전체 가로 스크롤은 발생하지 않음
+   */
+  .recommended-list {
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+
+  .recommended-row {
+    min-width: 720px;
+
+    min-height: 48px;
+
+    grid-template-columns:
+      minmax(120px, 1.4fr)
+      repeat(4, minmax(60px, 0.8fr))
+      minmax(85px, 0.9fr)
+      minmax(75px, 0.8fr);
+
+    gap: 8px;
+  }
+}
+
+
+/* ==========================================
+   760px 이하
+   모바일
+   ========================================== */
+
+@media (max-width: 760px) {
+
+  .recommended-list {
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+
+
+  .recommended-row {
+    /*
+     * 모바일에서는 기존 정보 구조를
+     * 유지하기 위해 내부 행만 가로 스크롤
+     */
+    min-width: 700px;
+
+    min-height: 48px;
+
+    padding: 6px 8px;
+
+    gap: 8px;
+  }
+
+
+  .recommended-product {
+    font-size: 11px;
+  }
+
+
+  .recommended-meta {
+    font-size: 8px;
+  }
+
+
+  .recommended-label {
+    font-size: 8px;
+  }
+
+
+  .recommended-item strong {
+    font-size: 10px;
+  }
+}

@@ -1,0 +1,1441 @@
+/* =========================================================
+   발주 관리 페이지
+   Purchase Management
+   ========================================================= */
+
+
+/* =========================================================
+   RESET / BASE
+   ========================================================= */
+
+.purchase-page,
+.purchase-page *,
+.purchase-page *::before,
+.purchase-page *::after {
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   PAGE
+   ========================================================= */
+
+.purchase-page {
+  width: 100%;
+  max-width: 100%;
+
+  height: 100%;
+  min-height: 0;
+
+  margin: 0;
+  padding: 10px 12px;
+
+  background: #f8fafc;
+  color: #172033;
+
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Noto Sans KR",
+    sans-serif;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+
+  min-width: 0;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.purchase-header {
+  width: 100%;
+  min-width: 0;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  padding: 0 2px 8px;
+
+  border-bottom: 1px solid #e2e8f0;
+
+  flex: 0 0 auto;
+}
+
+.purchase-header > div:first-child {
+  min-width: 0;
+}
+
+.purchase-brand {
+  margin-bottom: 2px;
+
+  color: #4f46e5;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  line-height: 1.2;
+}
+
+.purchase-header h1 {
+  margin: 0;
+
+  color: #111827;
+
+  font-size: 23px;
+  font-weight: 800;
+
+  line-height: 1.15;
+}
+
+.purchase-header p {
+  margin: 4px 0 0;
+
+  color: #64748b;
+
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.purchase-header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  gap: 4px;
+
+  flex-shrink: 0;
+
+  color: #64748b;
+
+  font-size: 9px;
+}
+
+.header-action {
+  height: 28px;
+
+  padding: 0 12px;
+
+  border: 1px solid #d8b4fe;
+  border-radius: 16px;
+
+  background: #f5f3ff;
+  color: #7c3aed;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  white-space: nowrap;
+
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.header-action:hover {
+  background: #ede9fe;
+  border-color: #c4b5fd;
+}
+
+
+/* =========================================================
+   KPI
+   ========================================================= */
+
+.purchase-kpi-grid {
+  width: 100%;
+  min-width: 0;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 9px;
+
+  margin-top: 8px;
+
+  flex: 0 0 auto;
+}
+
+.purchase-kpi {
+  position: relative;
+
+  min-width: 0;
+  min-height: 70px;
+
+  padding: 10px 13px;
+
+  overflow: hidden;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 9px;
+}
+
+.purchase-kpi::before {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  top: 0;
+  bottom: 0;
+
+  width: 3px;
+
+  border-radius: 9px 0 0 9px;
+}
+
+.purchase-kpi.purple::before {
+  background: #7c3aed;
+}
+
+.purchase-kpi.blue::before {
+  background: #3b82f6;
+}
+
+.purchase-kpi.green::before {
+  background: #14b8a6;
+}
+
+.purchase-kpi.orange::before {
+  background: #f59e0b;
+}
+
+.purchase-kpi span {
+  display: block;
+
+  color: #64748b;
+
+  font-size: 9px;
+  line-height: 1.2;
+}
+
+.purchase-kpi strong {
+  display: block;
+
+  margin-top: 4px;
+
+  color: #111827;
+
+  font-size: 21px;
+  font-weight: 800;
+
+  line-height: 1.05;
+
+  white-space: nowrap;
+}
+
+.purchase-kpi strong small {
+  margin-left: 3px;
+
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.purchase-kpi p {
+  margin: 3px 0 0;
+
+  color: #94a3b8;
+
+  font-size: 8px;
+  line-height: 1.2;
+}
+
+
+/* =========================================================
+   STEP
+   ========================================================= */
+
+.purchase-steps {
+  width: 100%;
+  min-width: 0;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 0;
+
+  margin-top: 8px;
+  padding: 7px 13px;
+
+  min-height: 44px;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+
+  flex: 0 0 auto;
+
+  overflow: hidden;
+}
+
+.step {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  min-width: 0;
+
+  padding-right: 10px;
+}
+
+.step:not(:last-child)::after {
+  content: "";
+
+  position: absolute;
+
+  left: 105px;
+  right: 12px;
+
+  top: 50%;
+
+  height: 1px;
+
+  background: #e2e8f0;
+}
+
+.step b {
+  position: relative;
+  z-index: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  width: 23px;
+  height: 23px;
+
+  border-radius: 50%;
+
+  background: #f1f5f9;
+  color: #64748b;
+
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.step.done b {
+  background: #dcfce7;
+  color: #059669;
+}
+
+.step.active b {
+  background: #7c3aed;
+  color: #ffffff;
+}
+
+.step div {
+  position: relative;
+  z-index: 1;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 1px;
+
+  min-width: 0;
+
+  overflow: hidden;
+}
+
+.step strong {
+  color: #1e293b;
+
+  font-size: 9px;
+  line-height: 1.2;
+
+  white-space: nowrap;
+}
+
+.step span {
+  color: #94a3b8;
+
+  font-size: 7px;
+  line-height: 1.2;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   FILTER
+   ========================================================= */
+
+.purchase-filter {
+  width: 100%;
+  min-width: 0;
+
+  display: grid;
+
+  grid-template-columns:
+    170px
+    170px
+    140px
+    minmax(220px, 1fr);
+
+  gap: 8px;
+
+  margin-top: 8px;
+  padding: 8px 11px;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+
+  flex: 0 0 auto;
+
+  overflow: hidden;
+}
+
+.filter-item,
+.filter-search {
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+
+  min-width: 0;
+}
+
+.filter-item label,
+.filter-search label {
+  color: #64748b;
+
+  font-size: 8px;
+  font-weight: 500;
+
+  line-height: 1.2;
+}
+
+.filter-item select,
+.filter-search input {
+  width: 100%;
+  height: 32px;
+
+  padding: 0 9px;
+
+  border: 1px solid #dbe2ea;
+  border-radius: 6px;
+
+  background: #ffffff;
+  color: #334155;
+
+  font-size: 9px;
+
+  outline: none;
+}
+
+.filter-search input::placeholder {
+  color: #94a3b8;
+}
+
+.filter-search input:focus,
+.filter-item select:focus {
+  border-color: #a78bfa;
+
+  box-shadow:
+    0 0 0 2px rgba(124, 58, 237, 0.08);
+}
+
+
+/* =========================================================
+   MAIN CONTENT
+   ========================================================= */
+
+.purchase-content {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    225px;
+
+  gap: 10px;
+
+  margin-top: 8px;
+
+  /*
+    핵심:
+    Header / KPI / Step / Filter를 제외한
+    남은 높이만 Content가 사용
+  */
+  flex: 1 1 0;
+
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   PURCHASE LIST
+   ========================================================= */
+
+.purchase-list {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 9px;
+
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   LIST HEADER
+   ========================================================= */
+
+.purchase-list-header {
+  width: 100%;
+  min-width: 0;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 8px 11px;
+
+  border-bottom: 1px solid #e2e8f0;
+
+  flex: 0 0 auto;
+}
+
+.purchase-list-header h2 {
+  margin: 0;
+
+  color: #1e293b;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  line-height: 1.2;
+}
+
+.purchase-list-header p {
+  margin: 2px 0 0;
+
+  color: #94a3b8;
+
+  font-size: 8px;
+  line-height: 1.2;
+}
+
+.purchase-list-header > span {
+  flex-shrink: 0;
+
+  color: #64748b;
+
+  font-size: 9px;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   TABLE WRAPPER
+   ========================================================= */
+
+.purchase-table-wrap {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+
+  flex: 1 1 0;
+
+  overflow: auto;
+
+  position: relative;
+}
+
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+.purchase-table-wrap table {
+  width: 100%;
+
+  /*
+    화면이 좁아지면 가로 스크롤
+    화면이 넓으면 전체 폭 사용
+  */
+  min-width: 980px;
+
+  border-collapse: separate;
+  border-spacing: 0;
+
+  table-layout: fixed;
+
+  font-size: 9px;
+}
+
+
+/* =========================================================
+   TABLE HEADER
+   ========================================================= */
+
+.purchase-table-wrap th {
+  position: sticky;
+
+  top: 0;
+  z-index: 20;
+
+  height: 32px;
+
+  padding: 0 7px;
+
+  background: #f8fafc;
+  color: #64748b;
+
+  font-size: 8px;
+  font-weight: 700;
+
+  border-bottom: 1px solid #dfe6ee;
+
+  white-space: nowrap;
+
+  text-align: center;
+}
+
+.purchase-table-wrap th:first-child {
+  border-left: 0;
+}
+
+
+/* =========================================================
+   TABLE BODY
+   ========================================================= */
+
+.purchase-table-wrap td {
+  height: 41px;
+
+  padding: 4px 7px;
+
+  background: #ffffff;
+
+  color: #334155;
+
+  font-size: 9px;
+
+  border-bottom: 1px solid #edf2f7;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  vertical-align: middle;
+
+  text-align: center;
+}
+
+.purchase-table-wrap tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.purchase-table-wrap tbody tr:hover td {
+  background: #fafafa;
+}
+
+.purchase-table-wrap tbody tr.approved-row td {
+  background: #f0fdf4;
+}
+
+
+/* =========================================================
+   COLUMN WIDTH
+   ========================================================= */
+
+/*
+  1. 체크
+*/
+.purchase-table-wrap th:nth-child(1) {
+  width: 42px;
+}
+
+/*
+  2. 상품
+*/
+.purchase-table-wrap th:nth-child(2) {
+  width: 210px;
+
+  text-align: left;
+}
+
+/*
+  3. 매장
+*/
+.purchase-table-wrap th:nth-child(3) {
+  width: 110px;
+
+  text-align: left;
+}
+
+/*
+  4. 위험
+*/
+.purchase-table-wrap th:nth-child(4) {
+  width: 70px;
+}
+
+/*
+  5. 현재재고
+*/
+.purchase-table-wrap th:nth-child(5) {
+  width: 90px;
+}
+
+/*
+  6. 권장재고
+*/
+.purchase-table-wrap th:nth-child(6) {
+  width: 90px;
+}
+
+/*
+  7. 발주량
+*/
+.purchase-table-wrap th:nth-child(7) {
+  width: 165px;
+}
+
+/*
+  8. 예상금액
+*/
+.purchase-table-wrap th:nth-child(8) {
+  width: 125px;
+}
+
+/*
+  9. 판정
+*/
+.purchase-table-wrap th:nth-child(9) {
+  width: 130px;
+}
+
+
+/* =========================================================
+   PRODUCT CELL
+   ========================================================= */
+
+.product-cell {
+  width: 100%;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 2px;
+
+  overflow: hidden;
+
+  text-align: left;
+}
+
+.product-cell strong {
+  display: block;
+
+  color: #1e293b;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  line-height: 1.25;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+.product-cell span {
+  display: block;
+
+  color: #94a3b8;
+
+  font-size: 7px;
+
+  line-height: 1.2;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   STORE CELL
+   ========================================================= */
+
+.store-cell {
+  width: 100%;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 2px;
+
+  overflow: hidden;
+
+  color: #334155;
+
+  font-size: 8px;
+
+  line-height: 1.2;
+
+  text-align: left;
+
+  white-space: nowrap;
+}
+
+.store-cell span {
+  color: #94a3b8;
+
+  font-size: 7px;
+
+  line-height: 1.2;
+}
+
+
+/* =========================================================
+   RISK
+   ========================================================= */
+
+.risk {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  min-width: 30px;
+
+  padding: 4px 7px;
+
+  border-radius: 5px;
+
+  font-size: 8px;
+  font-weight: 700;
+
+  line-height: 1;
+
+  white-space: nowrap;
+}
+
+.risk.urgent {
+  background: #fee2e2;
+
+  color: #ef4444;
+}
+
+.risk.normal {
+  background: #f1f5f9;
+
+  color: #64748b;
+}
+
+
+/* =========================================================
+   QUANTITY CONTROL
+   ========================================================= */
+
+.qty-control {
+  display: flex;
+  align-items: center;
+
+  width: 140px;
+  height: 26px;
+
+  margin: 0 auto;
+
+  border: 1px solid #dbe2ea;
+  border-radius: 6px;
+
+  overflow: hidden;
+
+  background: #ffffff;
+}
+
+.qty-control button {
+  width: 25px;
+  height: 100%;
+
+  flex-shrink: 0;
+
+  padding: 0;
+
+  border: 0;
+
+  background: #f8fafc;
+  color: #64748b;
+
+  font-size: 11px;
+
+  cursor: pointer;
+
+  transition: background 0.15s ease;
+}
+
+.qty-control button:hover {
+  background: #f1f5f9;
+}
+
+.qty-control strong {
+  flex: 1;
+
+  color: #1e293b;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  text-align: center;
+
+  line-height: 1;
+}
+
+
+/* =========================================================
+   ROW ACTION
+   ========================================================= */
+
+.row-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 4px;
+
+  white-space: nowrap;
+}
+
+.row-actions button {
+  height: 24px;
+
+  padding: 0 7px;
+
+  border: 1px solid #dbe2ea;
+  border-radius: 5px;
+
+  background: #ffffff;
+  color: #64748b;
+
+  font-size: 8px;
+
+  cursor: pointer;
+
+  white-space: nowrap;
+
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.row-actions button:hover {
+  background: #f8fafc;
+}
+
+.row-actions .approve {
+  color: #7c3aed;
+
+  border-color: #ddd6fe;
+}
+
+.row-actions .approve:hover {
+  background: #f5f3ff;
+
+  border-color: #c4b5fd;
+}
+
+
+/* =========================================================
+   SUMMARY
+   ========================================================= */
+
+.purchase-summary {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+
+  padding: 12px;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 9px;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.purchase-summary h2 {
+  margin: 0;
+
+  color: #1e293b;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  line-height: 1.2;
+}
+
+.purchase-summary > p {
+  margin: 3px 0 10px;
+
+  color: #94a3b8;
+
+  font-size: 8px;
+
+  line-height: 1.4;
+}
+
+
+/* =========================================================
+   SUMMARY ROW
+   ========================================================= */
+
+.summary-row {
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
+
+  min-height: 34px;
+
+  padding: 7px 0;
+
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.summary-row span {
+  color: #64748b;
+
+  font-size: 8px;
+}
+
+.summary-row strong {
+  color: #111827;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   SUMMARY POLICY
+   ========================================================= */
+
+.summary-policy {
+  margin-top: 10px;
+
+  padding: 10px;
+
+  border-radius: 7px;
+
+  background: #f5f3ff;
+}
+
+.summary-policy strong {
+  color: #7c3aed;
+
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.summary-policy p {
+  margin: 5px 0 0;
+
+  color: #64748b;
+
+  font-size: 7px;
+
+  line-height: 1.55;
+}
+
+
+/* =========================================================
+   SUMMARY STAT
+   ========================================================= */
+
+.summary-stat {
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
+
+  margin-top: 10px;
+
+  padding: 9px;
+
+  border-radius: 6px;
+
+  background: #f8fafc;
+}
+
+.summary-stat span {
+  color: #64748b;
+
+  font-size: 8px;
+}
+
+.summary-stat strong {
+  color: #ef4444;
+
+  font-size: 9px;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   SUMMARY BUTTON
+   ========================================================= */
+
+.summary-button {
+  width: 100%;
+  height: 32px;
+
+  margin-top: 8px;
+
+  border-radius: 6px;
+
+  font-size: 8px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    opacity 0.15s ease,
+    background 0.15s ease;
+}
+
+.summary-button.outline {
+  border: 1px solid #c4b5fd;
+
+  background: #ffffff;
+  color: #7c3aed;
+}
+
+.summary-button.outline:hover {
+  background: #f5f3ff;
+}
+
+.summary-button.primary {
+  border: 0;
+
+  background: #7c3aed;
+  color: #ffffff;
+}
+
+.summary-button.primary:hover {
+  background: #6d28d9;
+}
+
+.summary-button:hover {
+  opacity: 0.95;
+}
+
+
+/* =========================================================
+   CHECKBOX
+   ========================================================= */
+
+.purchase-table-wrap input[type="checkbox"] {
+  width: 13px;
+  height: 13px;
+
+  margin: 0;
+
+  accent-color: #7c3aed;
+
+  cursor: pointer;
+
+  vertical-align: middle;
+}
+
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+.purchase-table-wrap::-webkit-scrollbar,
+.purchase-summary::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+.purchase-table-wrap::-webkit-scrollbar-track,
+.purchase-summary::-webkit-scrollbar-track {
+  background: #f8fafc;
+}
+
+.purchase-table-wrap::-webkit-scrollbar-thumb,
+.purchase-summary::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+
+  border-radius: 10px;
+}
+
+.purchase-table-wrap::-webkit-scrollbar-thumb:hover,
+.purchase-summary::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+
+/* =========================================================
+   1400px 이하
+   ========================================================= */
+
+@media (max-width: 1400px) {
+
+  .purchase-content {
+    grid-template-columns:
+      minmax(0, 1fr)
+      215px;
+  }
+
+  .purchase-filter {
+    grid-template-columns:
+      160px
+      160px
+      135px
+      minmax(200px, 1fr);
+  }
+
+}
+
+
+/* =========================================================
+   1200px 이하
+   ========================================================= */
+
+@media (max-width: 1200px) {
+
+  .purchase-content {
+    grid-template-columns:
+      minmax(0, 1fr)
+      200px;
+  }
+
+  .purchase-filter {
+    grid-template-columns:
+      145px
+      145px
+      125px
+      minmax(180px, 1fr);
+  }
+
+  .purchase-kpi strong {
+    font-size: 19px;
+  }
+
+}
+
+
+/* =========================================================
+   1050px 이하
+   ========================================================= */
+
+@media (max-width: 1050px) {
+
+  .purchase-content {
+    grid-template-columns:
+      minmax(0, 1fr)
+      185px;
+  }
+
+  .purchase-filter {
+    grid-template-columns:
+      135px
+      135px
+      115px
+      minmax(150px, 1fr);
+  }
+
+  .purchase-kpi-grid {
+    gap: 7px;
+  }
+
+  .purchase-kpi {
+    padding: 9px 11px;
+  }
+
+  .purchase-kpi strong {
+    font-size: 18px;
+  }
+
+}
+
+
+/* =========================================================
+   900px 이하
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+  .purchase-page {
+    height: auto;
+
+    min-height: 100%;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .purchase-kpi-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .purchase-steps {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+
+    gap: 8px;
+  }
+
+  .step:not(:last-child)::after {
+    display: none;
+  }
+
+  .purchase-filter {
+    grid-template-columns:
+      1fr 1fr;
+  }
+
+  .purchase-content {
+    grid-template-columns: 1fr;
+
+    min-height: 700px;
+
+    overflow: visible;
+  }
+
+  .purchase-list {
+    min-height: 500px;
+  }
+
+  .purchase-summary {
+    min-height: 280px;
+  }
+
+}
+
+
+/* =========================================================
+   700px 이하
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+  .purchase-header {
+    flex-direction: column;
+
+    gap: 8px;
+  }
+
+  .purchase-header-right {
+    align-items: flex-start;
+  }
+
+  .purchase-kpi-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .purchase-filter {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+
+/* =========================================================
+   600px 이하
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+  .purchase-page {
+    padding: 8px;
+  }
+
+  .purchase-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .purchase-header h1 {
+    font-size: 21px;
+  }
+
+  .purchase-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .purchase-content {
+    min-height: 650px;
+  }
+
+}
+
+
+/* =========================================================
+   480px 이하
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+  .purchase-header p {
+    max-width: 280px;
+  }
+
+  .purchase-kpi {
+    min-height: 65px;
+  }
+
+  .purchase-kpi strong {
+    font-size: 18px;
+  }
+
+  .purchase-list-header {
+    padding: 8px;
+  }
+
+  .purchase-summary {
+    padding: 10px;
+  }
+
+}

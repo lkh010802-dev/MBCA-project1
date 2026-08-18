@@ -1,0 +1,214 @@
+/* ==========================================
+   결품과 수요 관계
+   ========================================== */
+
+.demand-defect-chart {
+  width: 100%;
+  min-height: 250px;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+
+  padding: 16px;
+
+  box-sizing: border-box;
+}
+
+
+/* ==========================================
+   헤더
+   ========================================== */
+
+.demand-defect-chart__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  margin-bottom: 10px;
+}
+
+.demand-defect-chart__title {
+  margin: 0;
+
+  font-size: 15px;
+  font-weight: 700;
+
+  color: #111827;
+}
+
+.demand-defect-chart__desc {
+  margin: 4px 0 0;
+
+  font-size: 11px;
+  color: #6b7280;
+}
+
+
+/* 우측 분석 기준 */
+
+.demand-defect-chart__scenario {
+  flex-shrink: 0;
+
+  padding: 4px 7px;
+
+  border-radius: 5px;
+
+  background: #fef2f2;
+  color: #ef4444;
+
+  font-size: 10px;
+  font-weight: 600;
+}
+
+
+/* ==========================================
+   Recharts 차트 영역
+   ========================================== */
+
+.demand-defect-chart__body {
+  width: 100%;
+  height: 170px;
+
+  box-sizing: border-box;
+}
+
+
+/* ResponsiveContainer */
+
+.demand-defect-chart
+.recharts-responsive-container {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+
+/* X / Y 축 */
+
+.demand-defect-chart
+.recharts-cartesian-axis-tick-value {
+  font-size: 10px;
+  fill: #64748b;
+}
+
+
+/* 그리드 */
+
+.demand-defect-chart
+.recharts-cartesian-grid line {
+  stroke: #f1f5f9;
+}
+
+
+/* 툴팁 */
+
+.demand-defect-chart
+.recharts-tooltip-wrapper {
+  outline: none;
+}
+
+
+/* 범례 */
+
+.demand-defect-chart
+.recharts-legend-item-text {
+  font-size: 10px !important;
+  color: #475569 !important;
+}
+
+
+/* ==========================================
+   결품 손실률 요약
+   ========================================== */
+
+.demand-defect-chart__summary {
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
+
+  margin-top: 6px;
+
+  padding: 7px 10px;
+
+  background: #f8fafc;
+
+  border-radius: 6px;
+
+  font-size: 11px;
+
+  color: #64748b;
+}
+
+
+.demand-defect-chart__summary strong {
+  color: #ef4444;
+
+  font-size: 13px;
+
+  font-weight: 700;
+}
+
+
+/* ==========================================
+   하단 설명
+   ========================================== */
+
+.demand-defect-chart__footer {
+  margin-top: 8px;
+
+  padding-top: 8px;
+
+  border-top: 1px solid #f1f5f9;
+
+  font-size: 10px;
+
+  color: #94a3b8;
+
+  line-height: 1.5;
+}
+
+
+/* ==========================================
+   데이터 없음
+   ========================================== */
+
+.demand-defect-chart .empty {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  color: #94a3b8;
+
+  font-size: 12px;
+}
+
+
+/* ==========================================
+   반응형
+   ========================================== */
+
+@media (max-width: 760px) {
+
+  .demand-defect-chart {
+    padding: 12px;
+  }
+
+  .demand-defect-chart__body {
+    height: 160px;
+  }
+
+  .demand-defect-chart__title {
+    font-size: 14px;
+  }
+
+  .demand-defect-chart__desc {
+    font-size: 10px;
+  }
+
+}

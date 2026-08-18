@@ -1,0 +1,214 @@
+/* ==========================================
+   품절 위험 목록
+   ========================================== */
+
+.risk-list {
+  /*
+   * 패널 제목 아래의 남은 공간 사용
+   */
+  flex: 1;
+
+  min-height: 0;
+
+  /*
+   * 아래쪽 여백 최소화
+   */
+  padding: 0 15px 2px;
+
+  /*
+   * 스크롤바 제거
+   * 5개 항목을 한 화면에 표시
+   */
+  overflow: hidden;
+}
+
+
+/* ==========================================
+   품절 위험 행
+   ========================================== */
+
+.risk-row {
+  /*
+   * 기존 54px → 42px
+   * 5개 항목이 패널 안에 들어가도록 축소
+   */
+  min-height: 42px;
+
+  /*
+   * 행 내부 여백 축소
+   */
+  padding: 4px 0;
+
+  border-top: 1px solid #edf0f4;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 8px;
+
+  box-sizing: border-box;
+}
+
+
+/* ==========================================
+   첫 번째 행
+   ========================================== */
+
+.risk-list .risk-row:first-child {
+  border-top: 0;
+}
+
+
+/* ==========================================
+   상품명
+   ========================================== */
+
+.risk-row strong {
+  display: block;
+
+  color: #172131;
+
+  font-size: 12px;
+
+  line-height: 1.1;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+
+/* ==========================================
+   매장 / 날짜
+   ========================================== */
+
+.risk-row span:not(.badge) {
+  display: block;
+
+  margin-top: 2px;
+
+  color: #8a96a6;
+
+  font-size: 9px;
+
+  line-height: 1.1;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+
+/* ==========================================
+   오른쪽 수치 + 배지
+   ========================================== */
+
+.risk-values {
+  display: flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  flex-shrink: 0;
+}
+
+.risk-values span:not(.badge) {
+  display: inline;
+
+  margin: 0;
+
+  font-size: 10px;
+
+  line-height: 1.1;
+
+  white-space: nowrap;
+}
+
+
+/* ==========================================
+   배지 영역
+   ========================================== */
+
+.risk-values .badge {
+  flex-shrink: 0;
+}
+
+
+/* ==========================================
+   1100px 이하
+   ========================================== */
+
+@media (max-width: 1100px) {
+
+  .risk-list {
+    padding: 0 12px 2px;
+  }
+
+  .risk-row {
+    min-height: 44px;
+
+    padding: 4px 0;
+  }
+
+  .risk-row strong {
+    font-size: 11px;
+  }
+
+  .risk-row span:not(.badge) {
+    font-size: 9px;
+  }
+
+  .risk-values span:not(.badge) {
+    font-size: 10px;
+  }
+}
+
+
+/* ==========================================
+   모바일
+   ========================================== */
+
+@media (max-width: 760px) {
+
+  .risk-list {
+    overflow: hidden;
+  }
+
+  .risk-row {
+    min-height: 52px;
+
+    padding: 5px 0;
+
+    align-items: flex-start;
+
+    flex-direction: column;
+
+    justify-content: center;
+  }
+
+  .risk-values {
+    width: 100%;
+
+    justify-content: space-between;
+  }
+
+  .risk-row strong {
+    font-size: 12px;
+  }
+
+  .risk-row span:not(.badge) {
+    font-size: 10px;
+  }
+
+  .risk-values span:not(.badge) {
+    font-size: 10px;
+  }
+}

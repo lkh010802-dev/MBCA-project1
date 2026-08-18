@@ -1,0 +1,19 @@
+.metric-card {
+  background: #ffffff;
+  border: 1px solid #e5eaf0;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(24, 34, 48, 0.04);
+  padding: 12px 16px;
+  box-sizing: border-box;
+  
+  /* 이 부분을 추가하거나 수정해 보세요 */
+  color: #0f172a; /* 카드 안의 전체 텍스트 및 숫자를 진한 검은색 계열로 지정 */
+}
+
+/* 만약 카드 내부에서 숫자와 라벨(제목)을 따로 구분해서 스타일링하고 싶다면 */
+.metric-card .value, 
+.metric-card h3,
+.metric-card span.number {
+  color: #0f172a; /* 진한 검은색 */
+  font-weight: 700;
+}

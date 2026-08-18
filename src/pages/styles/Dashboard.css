@@ -1,0 +1,462 @@
+/* ==========================================
+   Dashboard 전체 콘텐츠 영역
+   ========================================== */
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+  background-color: #0b0f19;
+  box-sizing: border-box;
+}
+
+.content {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+
+  padding: 2px 16px;
+
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  flex: 1;
+  min-height: 0;
+
+  overflow: hidden;
+}
+
+
+/* ==========================================
+   중간 대시보드 영역
+   ========================================== */
+
+.dashboard-middle {
+  display: grid;
+
+  grid-template-columns: 1.05fr 1fr 0.95fr;
+
+  gap: 6px;
+
+  align-items: stretch;
+
+  /*
+   * 기존 flex: 1 제거
+   * 중간 영역 높이를 고정해서
+   * 하단 권장 발주안 영역을 확보
+   */
+  flex: 0 0 295px;
+
+  height: 295px;
+  min-height: 295px;
+
+  min-width: 0;
+}
+
+.dashboard-middle > .panel {
+  height: 100%;
+  min-height: 0;
+}
+
+
+/* ==========================================
+   하단 대시보드 영역
+   ========================================== */
+
+.dashboard-bottom {
+  display: grid;
+
+  grid-template-columns: 2fr 1fr;
+
+  gap: 6px;
+
+  align-items: stretch;
+
+  /*
+   * 남은 공간을 하단에 우선 배정
+   */
+  flex: 1 1 auto;
+
+  /*
+   * 권장 발주안 5개 행이 들어갈 공간 확보
+   */
+  min-height: 350px;
+
+  height: auto;
+
+  min-width: 0;
+}
+
+.dashboard-bottom > .panel {
+  height: 100%;
+  min-height: 350px;
+}
+
+
+/* ==========================================
+   공통 패널
+   ========================================== */
+
+.panel {
+  background: #ffffff;
+
+  border: 1px solid #e5eaf0;
+
+  border-radius: 10px;
+
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+
+  /*
+   * 패널 자체의 바깥 영역은 유지
+   */
+  overflow: hidden;
+
+  min-width: 0;
+
+  box-sizing: border-box;
+
+  display: flex;
+
+  flex-direction: column;
+}
+
+
+/* ==========================================
+   패널 제목
+   ========================================== */
+
+.panel-title {
+  padding: 6px 12px 2px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 12px;
+
+  flex-shrink: 0;
+}
+
+.panel-title h2 {
+  margin: 0;
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+  letter-spacing: -0.02em;
+
+  color: #0f172a;
+}
+
+.panel-title p {
+  margin: 1px 0 0;
+
+  color: #64748b;
+
+  font-size: 10px;
+
+  line-height: 1.2;
+}
+
+
+/* ==========================================
+   패널 카운트
+   ========================================== */
+
+.panel-count {
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  min-height: 18px;
+
+  padding: 0 6px;
+
+  border-radius: 6px;
+
+  background: #f1f5f9;
+
+  color: #64748b;
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+
+  flex-shrink: 0;
+}
+
+
+/* ==========================================
+   패널 내부 콘텐츠
+   ========================================== */
+
+.panel > .panel-content {
+  flex: 1;
+
+  min-height: 0;
+
+  overflow-y: auto;
+
+  overflow-x: hidden;
+}
+
+
+/* ==========================================
+   전체 너비 영역
+   ========================================== */
+
+.full-width {
+  margin-bottom: 0;
+}
+
+
+/* ==========================================
+   상태 페이지
+   ========================================== */
+
+.state-page {
+  min-height: 100vh;
+
+  display: grid;
+
+  place-items: center;
+
+  color: #65758b;
+}
+
+.state-page.error {
+  color: #ef4444;
+}
+
+
+/* ==========================================
+   Footer
+   ========================================== */
+
+.footer {
+  padding: 2px 16px;
+
+  color: #64748b;
+
+  font-size: 9px;
+
+  text-align: center;
+
+  flex-shrink: 0;
+}
+
+
+/* ==========================================
+   1400px 이하
+   ========================================== */
+
+@media (max-width: 1400px) {
+
+  .content {
+    padding: 2px 12px;
+  }
+
+  .dashboard-middle,
+  .dashboard-bottom {
+    gap: 4px;
+  }
+}
+
+
+/* ==========================================
+   1100px 이하 (태블릿)
+   ========================================== */
+
+@media (max-width: 1100px) {
+
+  .app-shell {
+    height: auto;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .content {
+    padding: 10px 16px;
+
+    overflow: visible;
+
+    height: auto;
+
+    min-height: 0;
+  }
+
+  .dashboard-middle {
+    grid-template-columns: 1fr 1fr;
+
+    flex: none;
+
+    height: auto;
+    min-height: auto;
+  }
+
+  .dashboard-middle > :last-child {
+    grid-column: 1 / -1;
+  }
+
+  .dashboard-middle > .panel {
+    height: 280px;
+    min-height: 280px;
+  }
+
+  .dashboard-bottom {
+    grid-template-columns: 1fr;
+
+    flex: none;
+
+    height: auto;
+
+    min-height: auto;
+  }
+
+  .dashboard-bottom > .panel {
+    height: 320px;
+    min-height: 320px;
+  }
+}
+
+
+/* ==========================================
+   760px 이하 (모바일)
+   ========================================== */
+
+@media (max-width: 760px) {
+
+  .app-shell {
+    height: auto;
+
+    max-height: none;
+
+    overflow: visible;
+  }
+
+  .content {
+    padding: 8px 12px 20px;
+
+    overflow: visible;
+
+    height: auto;
+  }
+
+  .dashboard-middle,
+  .dashboard-bottom {
+    grid-template-columns: 1fr;
+
+    flex: none;
+
+    height: auto;
+
+    min-height: auto;
+  }
+
+  .dashboard-middle > :last-child {
+    grid-column: auto;
+  }
+
+  .dashboard-middle > .panel {
+    height: 260px;
+    min-height: 260px;
+  }
+
+  .dashboard-bottom > .panel {
+    height: 300px;
+    min-height: 300px;
+  }
+}
+
+
+/* ==========================================
+   데이터 없음
+   ========================================== */
+
+.empty {
+  padding: 20px 0;
+
+  color: #64748b;
+
+  text-align: center;
+}
+
+
+/* ==========================================
+   권장 발주안 / 재고 현황
+   ========================================== */
+
+.recommended-orders,
+.inventory-status {
+  min-width: 0;
+
+  min-height: 0;
+
+  display: flex;
+
+  flex-direction: column;
+}
+
+
+/* ==========================================
+   권장 발주안 목록 영역
+   ========================================== */
+
+.recommended-orders-list {
+  flex: 1;
+
+  min-height: 0;
+
+  overflow-y: auto;
+
+  overflow-x: hidden;
+}
+
+
+/* ==========================================
+   권장 발주안 테이블
+   ========================================== */
+
+.recommended-orders table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  table-layout: fixed;
+}
+
+
+/* ==========================================
+   권장 발주안 행 높이
+   ========================================== */
+
+.recommended-orders tbody tr {
+  height: 40px;
+}
+
+
+/* ==========================================
+   권장 발주안 셀
+   ========================================== */
+
+.recommended-orders td,
+.recommended-orders th {
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
