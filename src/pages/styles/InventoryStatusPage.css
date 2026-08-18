@@ -1,23 +1,39 @@
-/* =========================
+/* =========================================================
+   InventoryStatusPage
+   StockRiskPage와 동일한 헤더 + 기존 Inventory UI 유지
+   ========================================================= */
+
+
+/* =========================================================
    0. 페이지 전체
-   ========================= */
+   ========================================================= */
+
 .inventory-status-page {
+  display: flex;
+  flex-direction: column;
+
   width: 100%;
-  max-width: 100%;
   height: 100vh;
+  height: 100dvh;
+
+  min-width: 0;
   min-height: 0;
 
   margin: 0;
-  padding: 16px 20px 20px;
+
+  /*
+   * StockRiskPage와 동일한 화면 여백 기준
+   */
+  padding: 5px 5px 10px;
 
   box-sizing: border-box;
+
   overflow: hidden;
 
-  background: #f4f6f9;
-  color: #1f2937;
+  background: #f8fafc;
+  color: #1e293b;
 
   font-family:
-    'Pretendard',
     -apple-system,
     BlinkMacSystemFont,
     "Segoe UI",
@@ -25,706 +41,1333 @@
     sans-serif;
 }
 
-/* =========================
+
+/* =========================================================
    1. 페이지 헤더
-   ========================= */
-.page-header-row {
+   ★ StockRiskPage와 동일한 위치 기준
+   ========================================================= */
+
+.inventory-status-page .page-header-row {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
 
-  width: 100%;
-  margin-bottom: 12px;
-
-  box-sizing: border-box;
-}
-
-.page-header-row h2 {
-  margin: 0 0 4px;
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 1.2;
-  color: #111827;
-}
-
-.page-header-row p {
-  margin: 0;
-  font-size: 12px;
-  line-height: 1.3;
-  color: #4b5563;
-}
-
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.header-actions label {
-  font-size: 11px;
-  font-weight: 600;
-  color: #374151;
-}
-
-.header-actions input,
-.header-actions select {
-  height: 30px;
-  padding: 0 9px;
-
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-
-  background: #fff;
-  color: #1f2937;
-  font-size: 12px;
-  box-sizing: border-box;
-}
-
-.btn-balance {
-  height: 30px;
-  padding: 0 13px;
-
-  border: none;
-  border-radius: 6px;
-
-  background: #7c3aed;
-  color: #fff;
-
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 600;
-
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-}
-
-.btn-balance:hover {
-  background: #6d28d9;
-}
-
-/* =========================
-   2. 요약 카드
-   ========================= */
-.summary-cards-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
-
-  width: 100%;
-  margin-bottom: 12px;
-
-  box-sizing: border-box;
-}
-
-.summary-card {
-  min-width: 0;
-
-  padding: 12px 14px;
-
-  background: #fff;
-  border-radius: 8px;
-
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-  box-sizing: border-box;
-}
-
-.summary-card.shortage {
-  border-top: 4px solid #ef4444;
-}
-
-.summary-card.optimal {
-  border-top: 4px solid #10b981;
-}
-
-.summary-card.excess {
-  border-top: 4px solid #f59e0b;
-}
-
-.summary-card.ratio {
-  border-top: 4px solid #3b82f6;
-}
-
-.card-title {
-  font-size: 12px;
-  font-weight: 600;
-  color: #374151;
-}
-
-.card-value {
-  display: block;
-
-  margin: 5px 0;
-
-  font-size: 23px;
-  line-height: 1.1;
-  font-weight: 800;
-  letter-spacing: -0.5px;
-}
-
-.card-desc {
-  font-size: 10px;
-  line-height: 1.2;
-  color: #6b7280;
-}
-
-/* =========================
-   3. 필터
-   ========================= */
-.filter-dropdown-bar {
-  display: flex;
-  align-items: flex-end;
-  gap: 12px;
-
-  width: 100%;
-  margin-bottom: 12px;
-  padding: 10px 14px;
-
-  background: #fff;
-  border-radius: 8px;
-
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-  box-sizing: border-box;
-}
-
-.filter-group {
-  min-width: 0;
-}
-
-.filter-group label {
-  display: block;
-
-  margin-bottom: 4px;
-
-  font-size: 10px;
-  font-weight: 600;
-  color: #4b5563;
-}
-
-.filter-group select {
-  width: auto;
-  min-width: 118px;
-  height: 28px;
-
-  padding: 0 9px;
-
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-
-  background: #fff;
-  color: #1f2937;
-  font-size: 11px;
-  outline: none;
-  box-sizing: border-box;
-}
-
-/* =========================
-   4. 메인 레이아웃
-   ========================= */
-.main-layout-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 2.7fr) minmax(300px, 1fr);
-  gap: 14px;
-
-  width: 100%;
-
-  box-sizing: border-box;
-  min-width: 0;
-  min-height: 0;
-
-  overflow: hidden;
-}
-
-/* =========================
-   5. 패널
-   핵심:
-   - overflow-y: auto 제거
-   - height: 100% 제거
-   ========================= */
-.panel {
-  width: 100%;
-  min-width: 0;
-  min-height: 0;
-
-  padding: 14px;
-
-  background: #fff;
-  border-radius: 8px;
-
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-
-  box-sizing: border-box;
-
-  /* 테이블 내부 스크롤 제거 */
-  height: auto;
-  overflow: hidden;
-}
-
-.panel-title-wrap {
-  display: flex;
   justify-content: space-between;
   align-items: flex-start;
 
-  margin-bottom: 10px;
+  flex: 0 0 auto;
+
+  width: 100%;
+  min-width: 0;
+
+  margin: 0 0 9px;
+  padding: 0;
+
+  box-sizing: border-box;
 }
 
-.panel-title-wrap h3 {
-  margin: 0 0 2px;
 
-  font-size: 14px;
-  line-height: 1.2;
+/* =========================================================
+   헤더 왼쪽 영역
+   ========================================================= */
+
+.inventory-status-page .page-header-row > div:first-child {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  min-width: 0;
+
+  margin: 0;
+  padding: 0;
+}
+
+
+/* =========================================================
+   브레드크럼
+   ========================================================= */
+
+.inventory-status-page .breadcrumb {
+  display: block;
+
+  margin: 0 0 2px;
+  padding: 0;
+
+  font-size: 10px;
+  line-height: 12px;
+
+  font-weight: 600;
+
+  color: #7c3aed;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   페이지 제목
+   ========================================================= */
+
+.inventory-status-page .page-header-row h2 {
+  display: block;
+
+  margin: 0 0 2px;
+  padding: 0;
+
+  font-size: 19px;
+  line-height: 23px;
+
   font-weight: 700;
 
-  color: #111827;
+  letter-spacing: 0;
+
+  color: #1e293b;
 }
 
-.panel-desc {
+
+/* =========================================================
+   페이지 설명
+   ========================================================= */
+
+.inventory-status-page .page-header-row p {
+  display: block;
+
   margin: 0;
+  padding: 0;
+
+  font-size: 10px;
+  line-height: 13px;
+
+  font-weight: 400;
+
+  color: #64748b;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+/* =========================================================
+   2. 헤더 오른쪽
+   ★ StockRiskPage와 동일한 위치감
+   ========================================================= */
+
+.inventory-status-page .header-actions {
+  display: flex;
+
+  align-items: flex-end;
+
+  flex-shrink: 0;
+
+  gap: 8px;
+
+  margin: 0;
+  padding: 0;
+}
+
+
+/* =========================================================
+   기준일 그룹
+   ★ 라벨을 날짜 선택 박스 위에 배치
+   ========================================================= */
+
+.inventory-status-page .date-picker-group {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 2px;
+
+  margin: 0;
+  padding: 0;
+}
+
+
+/* =========================================================
+   기준일 라벨
+   ========================================================= */
+
+.inventory-status-page .header-actions label,
+.inventory-status-page .date-picker-group label {
+  display: block;
+
+  margin: 0;
+  padding: 0;
+
+  font-size: 10px !important;
+  line-height: 12px !important;
+
+  font-weight: 600 !important;
+
+  color: #64748b !important;
+
+  white-space: nowrap;
+
+  text-align: center;
+}
+
+
+/* =========================================================
+   날짜 선택
+   ========================================================= */
+
+.inventory-status-page .date-picker-group select,
+.inventory-status-page .header-actions select,
+.inventory-status-page .header-actions input {
+  width: 115px;
+
+  height: 29px;
+
+  padding: 0 10px;
+
+  background: #fff;
+
+  border: 1px solid #cbd5e1;
+
+  border-radius: 6px;
+
+  color: #1e293b;
+
+  font-size: 10px;
+
+  box-sizing: border-box;
+
+  outline: none;
+}
+
+
+/* =========================================================
+   날짜 선택
+   inline style 강제 통일
+   ========================================================= */
+
+.inventory-status-page .date-picker-group select {
+  width: 115px !important;
+
+  height: 29px !important;
+
+  padding: 0 10px !important;
+
+  border: 1px solid #cbd5e1 !important;
+
+  border-radius: 6px !important;
+
+  font-size: 10px !important;
+
+  color: #1e293b !important;
+
+  background: #fff !important;
+
+  box-sizing: border-box !important;
+}
+
+
+/* =========================================================
+   재고 균형 버튼
+   ★ 날짜 select와 같은 높이
+   ========================================================= */
+
+.inventory-status-page .btn-balance {
+  height: 29px;
+
+  padding: 0 10px;
+
+  margin: 0;
+
+  background: #7c3aed;
+
+  border: 1px solid #7c3aed;
+
+  border-radius: 6px;
+
+  color: #fff;
+
+  font-size: 10px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  box-sizing: border-box;
+
+  white-space: nowrap;
+}
+
+
+.inventory-status-page .btn-balance:hover {
+  background: #6d28d9;
+
+  border-color: #6d28d9;
+}
+
+
+/* =========================================================
+   3. 요약 카드
+   기존 Inventory UI 유지
+   ========================================================= */
+
+.inventory-status-page .summary-cards-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 10px;
+
+  flex: 0 0 auto;
+
+  width: 100%;
+  min-width: 0;
+
+  margin: 0 0 9px;
+
+  box-sizing: border-box;
+}
+
+
+.inventory-status-page .summary-card {
+  min-width: 0;
+
+  padding: 11px 14px;
+
+  background: #fff;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.04);
+
+  box-sizing: border-box;
+}
+
+
+.inventory-status-page .summary-card.shortage {
+  border-top: 3px solid #ef4444;
+}
+
+
+.inventory-status-page .summary-card.optimal {
+  border-top: 3px solid #10b981;
+}
+
+
+.inventory-status-page .summary-card.excess {
+  border-top: 3px solid #f59e0b;
+}
+
+
+.inventory-status-page .summary-card.ratio {
+  border-top: 3px solid #3b82f6;
+}
+
+
+.inventory-status-page .card-title {
+  display: block;
+
+  margin: 0 0 4px;
 
   font-size: 10px;
   line-height: 1.2;
-  color: #6b7280;
+
+  font-weight: 600;
+
+  color: #64748b;
 }
 
-.item-count {
+
+.inventory-status-page .card-value {
+  display: block;
+
+  margin: 0 0 2px;
+
+  font-size: 21px;
+  line-height: 1.15;
+
+  font-weight: 700;
+
+  letter-spacing: 0;
+
+  color: #1e293b;
+}
+
+
+.inventory-status-page .card-desc {
+  display: block;
+
+  font-size: 9px;
+  line-height: 1.2;
+
+  color: #94a3b8;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+/* =========================================================
+   4. 필터
+   기존 UI 유지
+   ========================================================= */
+
+.inventory-status-page .filter-dropdown-bar {
+  display: flex;
+
+  align-items: flex-end;
+
+  flex: 0 0 auto;
+
+  gap: 10px;
+
+  width: 100%;
+  min-width: 0;
+
+  margin: 0 0 9px;
+
+  padding: 9px 13px;
+
+  background: #fff;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+
+  box-sizing: border-box;
+
+  overflow: hidden;
+}
+
+
+.inventory-status-page .filter-group {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 3px;
+
+  min-width: 0;
+}
+
+
+.inventory-status-page .filter-group label {
+  display: block;
+
+  margin: 0;
+
+  font-size: 9px;
+  line-height: 1.2;
+
+  font-weight: 600;
+
+  color: #475569;
+}
+
+
+.inventory-status-page .filter-group select {
+  width: 115px;
+  min-width: 115px;
+
+  height: 27px;
+
+  padding: 0 8px;
+
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+
+  background: #fff;
+
+  color: #1e293b;
+
+  font-size: 10px;
+
+  outline: none;
+
+  box-sizing: border-box;
+}
+
+
+.inventory-status-page .filter-group select:focus {
+  border-color: #8b5cf6;
+
+  box-shadow:
+    0 0 0 2px rgba(124, 58, 237, 0.08);
+}
+
+
+/* =========================================================
+   5. 메인 레이아웃
+   ★ 헤더 + 카드 + 필터 아래 남은 높이를 사용
+   ========================================================= */
+
+.inventory-status-page .main-layout-grid {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 2.7fr)
+    minmax(300px, 1fr);
+
+  gap: 12px;
+
+  flex: 1 1 0;
+
+  width: 100%;
+
+  min-width: 0;
+  min-height: 0;
+
+  box-sizing: border-box;
+
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   6. 왼쪽 메인 패널
+   ========================================================= */
+
+.inventory-status-page .panel {
+  display: flex;
+
+  flex-direction: column;
+
+  width: 100%;
+  height: 100%;
+
+  min-width: 0;
+  min-height: 0;
+
+  padding: 13px;
+
+  background: #fff;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+
+  box-sizing: border-box;
+
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   7. 패널 제목
+   ========================================================= */
+
+.inventory-status-page .panel-title-wrap {
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
+
+  flex: 0 0 auto;
+
+  min-width: 0;
+
+  margin: 0 0 8px;
+}
+
+
+.inventory-status-page .panel-title-wrap > div:first-child {
+  min-width: 0;
+}
+
+
+.inventory-status-page .panel-title-wrap h3 {
+  margin: 0 0 2px;
+
+  font-size: 13px;
+  line-height: 1.2;
+
+  font-weight: 700;
+
+  color: #1e293b;
+}
+
+
+.inventory-status-page .panel-desc {
+  margin: 0;
+
+  font-size: 9px;
+  line-height: 1.2;
+
+  color: #64748b;
+}
+
+
+.inventory-status-page .item-count {
   flex-shrink: 0;
+
+  margin-left: 10px;
 
   padding: 3px 6px;
 
   border-radius: 4px;
 
-  background: #f3f4f6;
-  color: #4b5563;
+  background: #f1f5f9;
 
-  font-size: 10px;
+  color: #475569;
+
+  font-size: 9px;
+
   font-weight: 600;
+
   white-space: nowrap;
 }
 
-.current-page-count {
-  color: #6b7280;
+
+.inventory-status-page .current-page-count {
+  color: #64748b;
+
   font-weight: 500;
 }
 
-/* =========================
-   6. 재고 테이블
-   ========================= */
-.inventory-table-header,
-.inventory-row-grid {
+
+/* =========================================================
+   8. 재고 테이블 헤더
+   ========================================================= */
+
+.inventory-status-page .inventory-table-header,
+.inventory-status-page .inventory-row-grid {
   display: grid;
 
   grid-template-columns:
-    minmax(150px, 1.5fr)
+    minmax(140px, 1.5fr)
     minmax(60px, 0.7fr)
     minmax(70px, 0.9fr)
-    minmax(70px, 0.8fr)
-    minmax(70px, 0.8fr)
-    minmax(130px, 1.3fr)
+    minmax(65px, 0.8fr)
+    minmax(65px, 0.8fr)
+    minmax(120px, 1.3fr)
     minmax(65px, 0.8fr);
 
   align-items: center;
+
   gap: 5px;
 
   width: 100%;
+
   min-width: 0;
 
   box-sizing: border-box;
 }
 
-/* 테이블 헤더 */
-.inventory-table-header {
-  min-height: 30px;
 
-  padding: 6px 7px;
-  margin-bottom: 2px;
+.inventory-status-page .inventory-table-header {
+  flex: 0 0 auto;
 
-  border-top: 1px solid #e5e7eb;
-  border-bottom: 1px solid #e5e7eb;
-  border-radius: 6px;
+  min-height: 29px;
 
-  background: #f9fafb;
+  padding: 5px 6px;
 
-  font-size: 10px;
+  margin: 0 0 2px;
+
+  border-top: 1px solid #e2e8f0;
+
+  border-bottom: 1px solid #e2e8f0;
+
+  border-radius: 5px;
+
+  background: #f8fafc;
+
+  font-size: 9px;
   line-height: 1.1;
+
   font-weight: 600;
-  color: #4b5563;
+
+  color: #475569;
 }
 
-/* 10건이 한 화면에 들어가도록 행 높이 축소 */
-.inventory-row-grid {
-  min-height: 45px;
 
-  padding: 6px 7px;
+/* =========================================================
+   9. 재고 행
+   ========================================================= */
 
-  border-bottom: 1px solid #f3f4f6;
+.inventory-status-page .inventory-row-grid {
+  flex: 0 0 auto;
 
-  font-size: 11px;
-  line-height: 1.15;
+  min-height: 40px;
+
+  padding: 5px 6px;
+
+  border-bottom: 1px solid #f1f5f9;
+
+  font-size: 10px;
+  line-height: 1.2;
 
   box-sizing: border-box;
 }
 
-.inventory-row-grid:hover {
-  background: #fafbfc;
+
+.inventory-status-page .inventory-row-grid:hover {
+  background: #f8fafc;
 }
 
-.inventory-row-grid strong {
+
+.inventory-status-page .inventory-row-grid strong {
   display: block;
 
   margin: 0;
 
-  font-size: 11px;
-  line-height: 13px;
+  font-size: 10px;
+  line-height: 12px;
+
   font-weight: 600;
 
-  color: #111827;
+  color: #1e293b;
 }
 
-.sub-code {
+
+.inventory-status-page .sub-code {
+  display: block;
+
   margin-top: 1px;
 
-  font-size: 9px;
-  line-height: 10px;
+  font-size: 8px;
+  line-height: 9px;
 
-  color: #6b7280;
+  color: #64748b;
 
   white-space: nowrap;
+
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* =========================
-   7. 상태 배지
-   ========================= */
-.status-badge {
+
+/* =========================================================
+   10. 상태 배지
+   ========================================================= */
+
+.inventory-status-page .status-badge {
   display: inline-flex;
+
   align-items: center;
   justify-content: center;
 
-  min-height: 20px;
-  padding: 2px 7px;
+  min-width: 34px;
+  min-height: 18px;
 
-  border-radius: 6px;
+  padding: 2px 6px;
 
-  font-size: 9px;
+  border-radius: 5px;
+
+  font-size: 8px;
   line-height: 1;
+
   font-weight: 600;
 
   white-space: nowrap;
 }
 
-.status-badge.shortage {
+
+.inventory-status-page .status-badge.shortage {
   background: #fef2f2;
+
   color: #ef4444;
 }
 
-.status-badge.optimal {
+
+.inventory-status-page .status-badge.optimal {
   background: #ecfdf5;
+
   color: #059669;
 }
 
-.status-badge.excess {
+
+.inventory-status-page .status-badge.excess {
   background: #f1f5f9;
+
   color: #475569;
 }
 
-/* =========================
-   8. 재고 비교 바
-   ========================= */
-.bar-chart-container {
+
+/* =========================================================
+   11. 재고 비교 바
+   ========================================================= */
+
+.inventory-status-page .bar-chart-container {
   display: flex;
+
   flex-direction: column;
+
   gap: 2px;
 
   width: 100%;
+
   min-width: 0;
 
   box-sizing: border-box;
 }
 
-.bar {
+
+.inventory-status-page .bar {
   width: 100%;
+
   height: 4px;
 
   border-radius: 3px;
 }
 
-.bar.current {
+
+.inventory-status-page .bar.current {
   background: #c7d2fe;
 }
 
-.bar.recommended {
+
+.inventory-status-page .bar.recommended {
   background: #a7f3d0;
 }
 
-/* =========================
-   9. 액션 버튼
-   ========================= */
-.action-btn {
+
+/* =========================================================
+   12. 액션 버튼
+   ========================================================= */
+
+.inventory-status-page .action-btn {
   padding: 3px 6px;
 
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
+  border: 1px solid #cbd5e1;
+
+  border-radius: 5px;
 
   background: #fff;
-  color: #374151;
+
+  color: #475569;
 
   cursor: pointer;
 
-  font-size: 9px;
+  font-size: 8px;
+
   line-height: 1.2;
+
   font-weight: 500;
 
   white-space: nowrap;
 }
 
-.action-btn:hover {
-  background: #f3f4f6;
-  border-color: #9ca3af;
-  color: #111827;
+
+.inventory-status-page .action-btn:hover {
+  background: #f8fafc;
+
+  border-color: #94a3b8;
+
+  color: #1e293b;
 }
 
-/* =========================
-   10. 빈 데이터
-   ========================= */
-.empty {
-  padding: 20px;
 
-  text-align: center;
+/* =========================================================
+   13. 페이지네이션
+   ========================================================= */
 
-  color: #6b7280;
-  font-size: 11px;
-}
-
-/* =========================
-   11. 페이지네이션
-   ========================= */
-.inventory-pagination {
+.inventory-status-page .inventory-pagination {
   display: flex;
+
   justify-content: center;
   align-items: center;
+
+  flex: 0 0 auto;
+
   gap: 4px;
 
-  margin-top: 8px;
+  height: 27px;
 
-  height: 28px;
+  margin-top: 6px;
 }
 
-.pagination-btn {
-  min-width: 26px;
-  height: 26px;
+
+.inventory-status-page .pagination-btn {
+  min-width: 25px;
+
+  height: 25px;
 
   padding: 0 7px;
 
-  border: 1px solid #d1d5db;
+  border: 1px solid #cbd5e1;
+
   border-radius: 5px;
 
   background: #fff;
-  color: #374151;
+
+  color: #475569;
 
   cursor: pointer;
 
-  font-size: 10px;
+  font-size: 9px;
+
   font-weight: 500;
 }
 
-.pagination-btn:hover:not(:disabled) {
-  background: #f3f4f6;
+
+.inventory-status-page .pagination-btn:hover:not(:disabled) {
+  background: #f8fafc;
 }
 
-.pagination-btn.active {
+
+.inventory-status-page .pagination-btn.active {
   background: #2563eb;
+
   border-color: #2563eb;
+
   color: #fff;
 }
 
-.pagination-btn:disabled {
+
+.inventory-status-page .pagination-btn:disabled {
   opacity: 0.45;
+
   cursor: default;
 }
 
-/* =========================
-   12. 오른쪽 위젯
-   ========================= */
-.side-widgets {
+
+/* =========================================================
+   14. 오른쪽 위젯 영역
+   ★ 메인 영역의 전체 높이를 사용
+   ========================================================= */
+
+.inventory-status-page .side-widgets {
   display: flex;
+
   flex-direction: column;
-  gap: 12px;
+
+  gap: 10px;
 
   width: 100%;
+  height: 100%;
+
   min-width: 0;
   min-height: 0;
 
   box-sizing: border-box;
 
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  overscroll-behavior: contain;
 }
 
-.widget-card {
+
+/* =========================================================
+   15. 오른쪽 위젯 카드
+   ========================================================= */
+
+.inventory-status-page .widget-card {
   width: 100%;
+
   min-width: 0;
 
-  padding: 14px;
+  padding: 12px;
 
   background: #fff;
-  border-radius: 8px;
 
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e8f0;
+
+  border-radius: 8px;
 
   box-sizing: border-box;
 
   overflow: hidden;
+
+  flex: 0 0 auto;
 }
 
-.widget-card h4 {
+
+.inventory-status-page .widget-card h4 {
   margin: 0 0 2px;
 
-  font-size: 13px;
+  font-size: 12px;
+
   line-height: 1.2;
+
   font-weight: 700;
 
-  color: #111827;
+  color: #1e293b;
 }
 
-.widget-desc {
-  margin: 0 0 10px;
 
-  font-size: 9px;
+.inventory-status-page .widget-desc {
+  margin: 0 0 8px;
+
+  font-size: 8px;
+
   line-height: 1.2;
 
-  color: #6b7280;
+  color: #64748b;
 }
 
-/* =========================
-   13. 매장별 분포
-   ========================= */
-.distribution-list {
+
+/* =========================================================
+   16. 매장별 분포
+   ========================================================= */
+
+.inventory-status-page .distribution-list {
   display: flex;
+
   flex-direction: column;
-  gap: 8px;
 
-  font-size: 10px;
+  gap: 7px;
+
+  width: 100%;
+
+  font-size: 9px;
 }
 
-.dist-info {
+
+.inventory-status-page .dist-info {
   display: flex;
+
   justify-content: space-between;
+
+  align-items: center;
 
   margin-bottom: 3px;
 
-  font-size: 10px;
+  font-size: 9px;
+
   font-weight: 600;
-  color: #374151;
+
+  color: #334155;
 }
 
-.dist-bar-bg {
+
+.inventory-status-page .dist-bar-bg {
   display: flex;
 
   width: 100%;
+
   height: 6px;
 
   overflow: hidden;
 
   background: #e5e7eb;
+
   border-radius: 3px;
 }
 
-.dist-segment.short {
+
+.inventory-status-page .dist-segment.short {
   background: #ef4444;
 }
 
-.dist-segment.optimal {
+
+.inventory-status-page .dist-segment.optimal {
   background: #10b981;
 }
 
-.dist-segment.excess {
+
+.inventory-status-page .dist-segment.excess {
   background: #f59e0b;
 }
 
-/* =========================
-   14. 과잉재고 TOP 6
-   ========================= */
-.top-excess-list {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
 
-  font-size: 10px;
+/* =========================================================
+   17. 과잉재고 TOP 6
+   ========================================================= */
+
+.inventory-status-page .top-excess-list {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 5px;
+
+  width: 100%;
+
+  font-size: 9px;
 }
 
-.top-item {
+
+.inventory-status-page .top-item {
   display: flex;
+
   justify-content: space-between;
+
   align-items: center;
+
+  min-width: 0;
 
   padding-bottom: 4px;
 
-  border-bottom: 1px dashed #e5e7eb;
+  border-bottom: 1px dashed #e2e8f0;
 
-  color: #374151;
+  color: #334155;
 }
 
-.top-item:last-child {
+
+.inventory-status-page .top-item:last-child {
   border-bottom: none;
 }
 
-.excess-val {
+
+.inventory-status-page .top-item > span:first-child {
+  min-width: 0;
+
+  overflow: hidden;
+
+  white-space: nowrap;
+
+  text-overflow: ellipsis;
+}
+
+
+.inventory-status-page .excess-val {
+  flex-shrink: 0;
+
+  margin-left: 8px;
+
   color: #d97706;
 
-  font-size: 10px;
+  font-size: 9px;
+
   font-weight: 700;
 
   white-space: nowrap;
 }
 
-/* =========================
-   15. 브라우저 기본 스크롤 완전 차단
-   ========================= */
-html,
-body,
-#root {
-  width: 100%;
-  height: 100%;
 
-  margin: 0;
-  padding: 0;
+/* =========================================================
+   18. 빈 데이터
+   ========================================================= */
 
-  overflow: hidden;
+.inventory-status-page .empty {
+  padding: 18px;
+
+  text-align: center;
+
+  color: #64748b;
+
+  font-size: 10px;
 }
 
-/* =========================
-   16. 작은 화면 대응
-   ========================= */
-@media (max-width: 1200px) {
+
+/* =========================================================
+   19. 낮은 화면
+   ========================================================= */
+
+@media (max-height: 800px) {
+
   .inventory-status-page {
-    padding: 12px 14px 16px;
+    padding-top: 5px;
+    padding-bottom: 10px;
   }
 
-  .main-layout-grid {
-    grid-template-columns: minmax(0, 2.4fr) minmax(280px, 1fr);
+
+  .inventory-status-page .page-header-row {
+    margin-bottom: 7px;
   }
 
-  .inventory-table-header,
-  .inventory-row-grid {
+
+  .inventory-status-page .page-header-row h2 {
+    font-size: 17px;
+  }
+
+
+  .inventory-status-page .summary-cards-grid {
+    margin-bottom: 7px;
+  }
+
+
+  .inventory-status-page .summary-card {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+
+  .inventory-status-page .card-value {
+    font-size: 19px;
+  }
+
+
+  .inventory-status-page .filter-dropdown-bar {
+    margin-bottom: 7px;
+
+    padding-top: 7px;
+    padding-bottom: 7px;
+  }
+
+
+  .inventory-status-page .inventory-row-grid {
+    min-height: 36px;
+
+    font-size: 9px;
+  }
+
+
+  .inventory-status-page .inventory-row-grid strong {
+    font-size: 9px;
+  }
+
+
+  .inventory-status-page .widget-card {
+    padding: 10px;
+  }
+}
+
+
+/* =========================================================
+   20. 화면 폭 축소
+   ========================================================= */
+
+@media (max-width: 1200px) {
+
+  .inventory-status-page {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+
+  .inventory-status-page .main-layout-grid {
     grid-template-columns:
-      minmax(130px, 1.5fr)
+      minmax(0, 2.5fr)
+      minmax(280px, 1fr);
+  }
+
+
+  .inventory-status-page .filter-dropdown-bar {
+    gap: 9px;
+  }
+
+
+  .inventory-status-page .inventory-table-header,
+  .inventory-status-page .inventory-row-grid {
+    grid-template-columns:
+      minmax(125px, 1.5fr)
       minmax(55px, 0.7fr)
       minmax(65px, 0.9fr)
-      minmax(65px, 0.8fr)
-      minmax(65px, 0.8fr)
-      minmax(110px, 1.3fr)
-      minmax(60px, 0.8fr);
+      minmax(60px, 0.8fr)
+      minmax(60px, 0.8fr)
+      minmax(105px, 1.3fr)
+      minmax(58px, 0.8fr);
   }
 }
 
+
+/* =========================================================
+   21. 태블릿
+   ========================================================= */
+
 @media (max-width: 900px) {
-  .summary-cards-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  .inventory-status-page {
+    height: auto;
+
+    min-height: 100dvh;
+
+    overflow-y: auto;
   }
 
-  .main-layout-grid {
+
+  .inventory-status-page .summary-cards-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+
+  .inventory-status-page .main-layout-grid {
     grid-template-columns: 1fr;
+
+    flex: none;
+
+    overflow: visible;
   }
 
-  .side-widgets {
+
+  .inventory-status-page .side-widgets {
     display: none;
   }
+
+
+  .inventory-status-page .panel {
+    min-height: 500px;
+  }
+}
+
+
+/* =========================================================
+   22. 모바일
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+  .inventory-status-page {
+    padding: 10px;
+  }
+
+
+  .inventory-status-page .page-header-row {
+    flex-direction: column;
+
+    gap: 7px;
+  }
+
+
+  .inventory-status-page .header-actions {
+    width: 100%;
+
+    justify-content: flex-end;
+
+    align-items: flex-end;
+  }
+
+
+  .inventory-status-page .summary-cards-grid {
+    grid-template-columns: 1fr;
+
+    gap: 7px;
+  }
+
+
+  .inventory-status-page .filter-dropdown-bar {
+    flex-direction: column;
+
+    align-items: stretch;
+
+    gap: 8px;
+  }
+
+
+  .inventory-status-page .filter-group select {
+    width: 100%;
+  }
+
+
+  .inventory-status-page .main-layout-grid {
+    min-height: 500px;
+  }
+
+
+  .inventory-status-page .panel {
+    padding: 9px;
+  }
+
+
+  .inventory-status-page .inventory-table-header,
+  .inventory-status-page .inventory-row-grid {
+    min-width: 760px;
+  }
+
+
+  .inventory-status-page .panel {
+    overflow-x: auto;
+  }
+}
+
+
+/* =========================================================
+   23. 스크롤바 시각적으로 숨김
+   ========================================================= */
+
+.inventory-status-page,
+.inventory-status-page * {
+  scrollbar-width: none;
+}
+
+
+.inventory-status-page::-webkit-scrollbar,
+.inventory-status-page *::-webkit-scrollbar {
+  width: 0;
+
+  height: 0;
 }

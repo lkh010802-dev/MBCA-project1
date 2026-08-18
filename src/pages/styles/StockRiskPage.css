@@ -1,16 +1,29 @@
 /* =========================================================
+   StockRiskPage
+   전체 화면 고정 + 메인 영역 남은 높이 사용
+   ========================================================= */
+
+
+/* =========================================================
    0. 페이지 전체
    ========================================================= */
+
 .stock-risk-page {
+  display: flex;
+  flex-direction: column;
+
   width: 100%;
-  max-width: 100%;
   height: 100vh;
+  height: 100dvh;
+
+  min-width: 0;
   min-height: 0;
 
-  padding: 16px 20px 20px;
+  padding: 12px 18px 14px;
   margin: 0;
 
   box-sizing: border-box;
+
   overflow: hidden;
 
   background-color: #f8fafc;
@@ -24,310 +37,444 @@
     sans-serif;
 }
 
+
 /* =========================================================
    1. 상단 헤더
    ========================================================= */
-.dashboard-header {
+
+.stock-risk-page .dashboard-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
 
+  flex: 0 0 auto;
+
   width: 100%;
-  margin-bottom: 12px;
+  min-width: 0;
+
+  margin-bottom: 9px;
 
   box-sizing: border-box;
 }
 
-.header-title-group {
+.stock-risk-page .header-title-group {
   min-width: 0;
 }
 
-.header-title-group .breadcrumb {
+.stock-risk-page .header-title-group .breadcrumb {
   display: block;
 
-  margin-bottom: 3px;
+  margin-bottom: 2px;
 
-  font-size: 11px;
+  font-size: 10px;
   line-height: 1.2;
   font-weight: 600;
+
   color: #7c3aed;
 }
 
-.header-title-group h1 {
-  margin: 0 0 3px;
+.stock-risk-page .header-title-group h1 {
+  margin: 0 0 2px;
 
-  font-size: 20px;
+  font-size: 19px;
   line-height: 1.2;
   font-weight: 700;
+
   color: #1e293b;
 }
 
-.header-title-group p {
+.stock-risk-page .header-title-group p {
   margin: 0;
 
-  font-size: 11px;
+  font-size: 10px;
   line-height: 1.3;
+
   color: #64748b;
 }
 
-.header-badge-group {
+.stock-risk-page .header-badge-group {
   display: flex;
   align-items: center;
-  gap: 10px;
+
+  flex-shrink: 0;
+
+  gap: 9px;
 }
 
-.monitor-link-btn {
-  height: 30px;
-  padding: 0 11px;
+.stock-risk-page .monitor-link-btn {
+  height: 29px;
+
+  padding: 0 10px;
 
   background-color: #fff;
+
   border: 1px solid #cbd5e1;
   border-radius: 6px;
 
   color: #475569;
-  font-size: 11px;
+
+  font-size: 10px;
   font-weight: 600;
 
   cursor: pointer;
+
   box-sizing: border-box;
 }
 
-.monitor-link-btn:hover {
+.stock-risk-page .monitor-link-btn:hover {
   background-color: #f8fafc;
 }
 
-.기준일 {
-  font-size: 11px;
+.stock-risk-page .기준일 {
+  font-size: 10px;
+
   color: #64748b;
+
   white-space: nowrap;
 }
+
 
 /* =========================================================
    2. KPI 카드
    ========================================================= */
-.kpi-cards-grid {
+
+.stock-risk-page .kpi-cards-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 10px;
+
+  flex: 0 0 auto;
 
   width: 100%;
-  margin-bottom: 12px;
-
-  box-sizing: border-box;
-}
-
-.kpi-card {
   min-width: 0;
 
-  padding: 13px 16px;
-
-  background: #fff;
-  border-radius: 9px;
-  border: 1px solid #e2e8f0;
-
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  margin-bottom: 9px;
 
   box-sizing: border-box;
 }
 
-.kpi-card.urgent {
+.stock-risk-page .kpi-card {
+  min-width: 0;
+
+  padding: 11px 14px;
+
+  background: #fff;
+
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.04);
+
+  box-sizing: border-box;
+}
+
+.stock-risk-page .kpi-card.urgent {
   border-left: 4px solid #ef4444;
 }
 
-.kpi-card.warning {
+.stock-risk-page .kpi-card.warning {
   border-left: 4px solid #f59e0b;
 }
 
-.kpi-label {
+.stock-risk-page .kpi-label {
   display: block;
 
-  margin-bottom: 5px;
+  margin-bottom: 4px;
 
-  font-size: 11px;
+  font-size: 10px;
   line-height: 1.2;
+
   color: #64748b;
 }
 
-.kpi-value {
-  margin: 0 0 3px;
+.stock-risk-page .kpi-value {
+  margin: 0 0 2px;
 
-  font-size: 22px;
+  font-size: 21px;
   line-height: 1.15;
+
   color: #1e293b;
 }
 
-.kpi-value strong {
+.stock-risk-page .kpi-value strong {
   font-weight: 700;
 }
 
-.kpi-desc {
-  font-size: 10px;
+.stock-risk-page .kpi-desc {
+  display: block;
+
+  font-size: 9px;
   line-height: 1.2;
+
   color: #94a3b8;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
+
 
 /* =========================================================
    3. 필터 / 검색
    ========================================================= */
-.filter-search-bar {
+
+.stock-risk-page .filter-search-bar {
   display: flex;
   align-items: flex-end;
-  gap: 14px;
+
+  flex: 0 0 auto;
+
+  gap: 12px;
 
   width: 100%;
-  margin-bottom: 12px;
-  padding: 10px 14px;
+  min-width: 0;
+
+  margin-bottom: 9px;
+  padding: 9px 13px;
 
   background: #fff;
-  border-radius: 9px;
+
+  border-radius: 8px;
   border: 1px solid #e2e8f0;
 
   box-sizing: border-box;
 }
 
-.filter-group,
-.search-group {
+.stock-risk-page .filter-group,
+.stock-risk-page .search-group {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+
+  gap: 3px;
 
   min-width: 0;
 }
 
-.filter-group label,
-.search-group label {
-  font-size: 10px;
+.stock-risk-page .filter-group label,
+.stock-risk-page .search-group label {
+  font-size: 9px;
   line-height: 1.2;
+
   font-weight: 600;
+
   color: #475569;
 }
 
-.filter-group select,
-.search-group input {
-  height: 28px;
+.stock-risk-page .filter-group select,
+.stock-risk-page .search-group input {
+  height: 27px;
 
-  padding: 0 9px;
+  padding: 0 8px;
 
   border: 1px solid #cbd5e1;
   border-radius: 6px;
 
-  font-size: 11px;
+  font-size: 10px;
+
   color: #1e293b;
   background-color: #fff;
 
   outline: none;
+
   box-sizing: border-box;
 }
 
-.search-group input {
-  width: 220px;
+.stock-risk-page .filter-group select {
+  width: 110px;
 }
 
-.status-filter-buttons {
+.stock-risk-page .search-group {
+  margin-left: 0;
+}
+
+.stock-risk-page .search-group input {
+  width: 205px;
+}
+
+.stock-risk-page .filter-group select:focus,
+.stock-risk-page .search-group input:focus {
+  border-color: #8b5cf6;
+
+  box-shadow:
+    0 0 0 2px rgba(124, 58, 237, 0.08);
+}
+
+.stock-risk-page .status-filter-buttons {
   display: flex;
+
   gap: 4px;
 }
 
-.status-filter-buttons button {
-  height: 28px;
+.stock-risk-page .status-filter-buttons button {
+  height: 27px;
 
-  padding: 0 11px;
+  padding: 0 10px;
 
   border: 1px solid #cbd5e1;
   border-radius: 6px;
 
   background-color: #fff;
+
   color: #64748b;
 
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
 
   cursor: pointer;
+
   box-sizing: border-box;
 }
 
-.status-filter-buttons button:hover:not(.disabled) {
+.stock-risk-page .status-filter-buttons button:hover {
   background-color: #f8fafc;
 }
 
-.status-filter-buttons button.active {
+.stock-risk-page .status-filter-buttons button.active {
   background-color: #7c3aed;
+
   color: #fff;
+
   border-color: #7c3aed;
 }
 
-.status-filter-buttons button.disabled {
+.stock-risk-page .status-filter-buttons button.disabled {
   opacity: 0.6;
+
   cursor: default;
 }
 
+
 /* =========================================================
    4. 메인 레이아웃
+   ★ 핵심 수정
+   남은 화면 높이를 정확하게 사용
    ========================================================= */
-.dashboard-main-layout {
+
+.stock-risk-page .dashboard-main-layout {
   display: grid;
-  grid-template-columns: minmax(0, 2.7fr) minmax(300px, 1fr);
-  gap: 14px;
+
+  grid-template-columns:
+    minmax(0, 2.7fr)
+    minmax(300px, 1fr);
+
+  gap: 12px;
+
+  /*
+   * 헤더 + KPI + 필터가 차지하고 남은 공간을
+   * 메인 영역이 정확하게 사용하도록 함
+   */
+  flex: 1 1 0;
 
   width: 100%;
   min-width: 0;
   min-height: 0;
 
   box-sizing: border-box;
+
   overflow: hidden;
 }
+
 
 /* =========================================================
    5. 테이블 패널
    ========================================================= */
-.table-panel {
+
+.stock-risk-page .table-panel {
+  display: flex;
+  flex-direction: column;
+
   width: 100%;
+  height: 100%;
+
   min-width: 0;
   min-height: 0;
 
-  padding: 14px;
+  padding: 13px;
 
   background: #fff;
-  border-radius: 9px;
+
+  border-radius: 8px;
   border: 1px solid #e2e8f0;
 
   box-sizing: border-box;
 
-  /* 내부 스크롤 제거 */
-  height: auto;
   overflow: hidden;
 }
 
-.panel-header-row {
+
+/* =========================================================
+   6. 테이블 패널 헤더
+   ========================================================= */
+
+.stock-risk-page .panel-header-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
 
-  margin-bottom: 9px;
+  flex: 0 0 auto;
+
+  min-width: 0;
+
+  margin-bottom: 8px;
 }
 
-.panel-header-row h3 {
+.stock-risk-page .panel-header-row h3 {
   margin: 0;
 
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.2;
+
   font-weight: 700;
+
   color: #1e293b;
 }
 
-.sub-count {
+.stock-risk-page .sub-count {
   flex-shrink: 0;
 
-  font-size: 10px;
+  margin-left: 10px;
+
+  font-size: 9px;
   line-height: 1.2;
+
   color: #64748b;
 }
 
+
 /* =========================================================
-   6. 위험 테이블
+   7. 테이블 컨테이너
    ========================================================= */
-.risk-data-table {
+
+.stock-risk-page .data-table-container {
+  flex: 1 1 0;
+
   width: 100%;
+  min-width: 0;
+  min-height: 0;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  box-sizing: border-box;
+
+  /*
+   * 스크롤 위치가 갑자기 튀는 것을 방지
+   */
+  overscroll-behavior: contain;
+}
+
+
+/* =========================================================
+   8. 위험 테이블
+   ========================================================= */
+
+.stock-risk-page .risk-data-table {
+  width: 100%;
+  min-width: 0;
 
   border-collapse: collapse;
   border-spacing: 0;
@@ -335,47 +482,99 @@
   table-layout: fixed;
 
   text-align: left;
-  font-size: 11px;
+
+  font-size: 10px;
 
   box-sizing: border-box;
 }
 
-/* 컬럼 폭을 안정적으로 유지 */
-.risk-data-table th:nth-child(1) { width: 18%; }
-.risk-data-table th:nth-child(2) { width: 10%; }
-.risk-data-table th:nth-child(3) { width: 9%; }
-.risk-data-table th:nth-child(4) { width: 11%; }
-.risk-data-table th:nth-child(5) { width: 11%; }
-.risk-data-table th:nth-child(6) { width: 12%; }
-.risk-data-table th:nth-child(7) { width: 13%; }
-.risk-data-table th:nth-child(8) { width: 16%; }
 
-.risk-data-table th {
-  height: 30px;
+/* =========================================================
+   9. 테이블 컬럼 폭
+   총합 = 100%
+   ========================================================= */
 
-  padding: 6px 8px;
+.stock-risk-page .risk-data-table th:nth-child(1) {
+  width: 18%;
+}
+
+.stock-risk-page .risk-data-table th:nth-child(2) {
+  width: 10%;
+}
+
+.stock-risk-page .risk-data-table th:nth-child(3) {
+  width: 9%;
+}
+
+.stock-risk-page .risk-data-table th:nth-child(4) {
+  width: 11%;
+}
+
+.stock-risk-page .risk-data-table th:nth-child(5) {
+  width: 11%;
+}
+
+.stock-risk-page .risk-data-table th:nth-child(6) {
+  width: 12%;
+}
+
+.stock-risk-page .risk-data-table th:nth-child(7) {
+  width: 13%;
+}
+
+.stock-risk-page .risk-data-table th:nth-child(8) {
+  width: 16%;
+}
+
+
+/* =========================================================
+   10. 테이블 헤더
+   ========================================================= */
+
+.stock-risk-page .risk-data-table th {
+  height: 29px;
+
+  padding: 6px 7px;
 
   background-color: #f8fafc;
+
   color: #475569;
 
-  font-size: 10px;
+  font-size: 9px;
   line-height: 1.1;
+
   font-weight: 600;
 
   border-bottom: 1px solid #e2e8f0;
 
   box-sizing: border-box;
+
+  white-space: nowrap;
+
+  position: sticky;
+  top: 0;
+  z-index: 5;
 }
 
-.risk-data-table td {
-  height: 43px;
 
-  padding: 6px 8px;
+/* =========================================================
+   11. 테이블 본문
+   ★ 가독성 개선
+   ========================================================= */
+
+.stock-risk-page .risk-data-table td {
+  height: 40px;
+
+  padding: 6px 7px;
 
   border-bottom: 1px solid #f1f5f9;
 
   color: #334155;
 
+  /*
+   * 기존 9px → 10px
+   * 숫자와 매장명이 훨씬 안정적으로 보임
+   */
   font-size: 10px;
   line-height: 1.2;
 
@@ -384,48 +583,67 @@
   box-sizing: border-box;
 
   white-space: nowrap;
+
   overflow: hidden;
+
   text-overflow: ellipsis;
 }
 
-.risk-data-table tr:hover {
+.stock-risk-page .risk-data-table tbody tr:hover {
   background-color: #f8fafc;
 }
 
-/* 상품명 + 상품코드 */
-.table-product-info {
+
+/* =========================================================
+   12. 상품명
+   ========================================================= */
+
+.stock-risk-page .table-product-info {
   min-width: 0;
+
+  overflow: hidden;
 }
 
-.table-product-info strong {
+.stock-risk-page .table-product-info strong {
   display: block;
 
-  margin-bottom: 1px;
+  margin: 0;
 
   color: #1e293b;
 
   font-size: 10px;
   line-height: 12px;
+
   font-weight: 600;
 
   white-space: nowrap;
+
   overflow: hidden;
+
   text-overflow: ellipsis;
 }
 
-.table-product-info span {
+.stock-risk-page .table-product-info span {
   display: block;
 
-  font-size: 9px;
+  font-size: 8px;
   line-height: 10px;
+
   color: #64748b;
 
   white-space: nowrap;
+
   overflow: hidden;
+
   text-overflow: ellipsis;
 }
 
-.empty-row {
+
+/* =========================================================
+   13. 빈 데이터
+   ========================================================= */
+
+.stock-risk-page .empty-row {
   height: 100px !important;
 
   text-align: center;
@@ -435,137 +653,196 @@
   padding: 20px !important;
 }
 
+
 /* =========================================================
-   7. 상태 배지
-   JSX에서 별도 class가 있다면 그대로 사용
+   14. 상태 배지
    ========================================================= */
-.risk-badge {
+
+.stock-risk-page .risk-badge {
   display: inline-flex;
+
   align-items: center;
   justify-content: center;
 
   min-width: 34px;
-  height: 19px;
+  height: 18px;
 
   padding: 0 6px;
 
   border-radius: 5px;
 
-  font-size: 9px;
+  font-size: 8px;
   line-height: 1;
+
   font-weight: 600;
 
   white-space: nowrap;
 }
 
+
 /* =========================================================
-   8. 페이지네이션
+   15. 페이지네이션
    ========================================================= */
-.inventory-pagination,
-.risk-pagination {
+
+.stock-risk-page .inventory-pagination,
+.stock-risk-page .risk-pagination {
   display: flex;
+
   justify-content: center;
   align-items: center;
+
+  flex: 0 0 auto;
+
   gap: 4px;
 
-  height: 28px;
-  margin-top: 7px;
+  height: 27px;
+
+  margin-top: 6px;
 }
 
-.pagination-btn {
-  min-width: 26px;
-  height: 26px;
+.stock-risk-page .pagination-btn {
+  min-width: 25px;
+  height: 25px;
 
   padding: 0 7px;
 
   border: 1px solid #cbd5e1;
+
   border-radius: 5px;
 
   background: #fff;
+
   color: #475569;
 
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 500;
 
   cursor: pointer;
 }
 
-.pagination-btn:hover:not(:disabled) {
+.stock-risk-page .pagination-btn:hover:not(:disabled) {
   background: #f8fafc;
 }
 
-.pagination-btn.active {
+.stock-risk-page .pagination-btn.active {
   background: #2563eb;
+
   border-color: #2563eb;
+
   color: #fff;
 }
 
-.pagination-btn:disabled {
+.stock-risk-page .pagination-btn:disabled {
   opacity: 0.45;
+
   cursor: default;
 }
 
+
 /* =========================================================
-   9. 우측 사이드바
+   16. 우측 사이드바
+   ★ 테이블과 동일한 높이 사용
    ========================================================= */
-.dashboard-sidebar {
+
+.stock-risk-page .dashboard-sidebar {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+
+  gap: 10px;
 
   width: 100%;
+  height: 100%;
+
   min-width: 0;
   min-height: 0;
 
   box-sizing: border-box;
 
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  /*
+   * 사이드바가 메인 높이를 넘을 경우
+   * 내부에서만 처리
+   */
+  overscroll-behavior: contain;
 }
 
-.sidebar-card {
+
+/* =========================================================
+   17. 우측 카드
+   ========================================================= */
+
+.stock-risk-page .sidebar-card {
   width: 100%;
   min-width: 0;
 
-  padding: 14px;
+  padding: 12px;
 
   background: #fff;
-  border-radius: 9px;
+
+  border-radius: 8px;
   border: 1px solid #e2e8f0;
 
   box-sizing: border-box;
 
   overflow: hidden;
+
+  flex: 0 0 auto;
 }
 
-.sidebar-card h4 {
+.stock-risk-page .sidebar-card h4 {
   margin: 0 0 2px;
 
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1.2;
+
   font-weight: 700;
+
   color: #1e293b;
 }
 
-.sidebar-sub {
+.stock-risk-page .sidebar-sub {
   display: block;
 
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 
-  font-size: 9px;
+  font-size: 8px;
   line-height: 1.2;
+
   color: #64748b;
 }
 
+
 /* =========================================================
-   10. 도넛 차트
+   18. 도넛 차트
+   5 / 5 / 30 = 총 40개 비율
    ========================================================= */
-.donut-chart-placeholder {
-  width: 125px;
-  height: 125px;
 
-  margin: 0 auto 12px;
+.stock-risk-page .donut-chart-placeholder {
+  width: 112px;
+  height: 112px;
 
-  border: 11px solid #06b6d4;
+  margin: 0 auto 10px;
+
+  /*
+   * 총 40개
+   *
+   * 긴급 5  = 12.5% = 45도
+   * 주의 5  = 12.5% = 45도
+   * 정상 30 = 75%   = 270도
+   *
+   * 빨강 → 주황 → 청록
+   */
+  background:
+    conic-gradient(
+      #ef4444 0deg 45deg,
+      #f59e0b 45deg 90deg,
+      #06b6d4 90deg 360deg
+    );
+
+  border: none;
+
   border-radius: 50%;
 
   display: flex;
@@ -573,28 +850,68 @@
   justify-content: center;
 
   position: relative;
+
   box-sizing: border-box;
 }
 
-.donut-center-text {
+
+/*
+ * 도넛 가운데 구멍
+ */
+.stock-risk-page .donut-chart-placeholder::before {
+  content: "";
+
+  position: absolute;
+
+  width: 76px;
+  height: 76px;
+
+  background: #fff;
+
+  border-radius: 50%;
+
+  left: 50%;
+  top: 50%;
+
+  transform: translate(-50%, -50%);
+
+  z-index: 1;
+}
+
+
+/* 가운데 숫자 */
+.stock-risk-page .donut-center-text {
+  position: relative;
+
+  z-index: 2;
+
   text-align: center;
 }
 
-.donut-center-text strong {
+
+.stock-risk-page .donut-center-text strong {
   display: block;
 
-  font-size: 18px;
+  font-size: 17px;
   line-height: 1.1;
+
   color: #1e293b;
 }
 
-.donut-center-text span {
-  font-size: 9px;
+
+.stock-risk-page .donut-center-text span {
+  font-size: 8px;
+
   color: #64748b;
 }
 
-.chart-legend {
+/* =========================================================
+   19. 차트 범례
+   ========================================================= */
+
+.stock-risk-page .chart-legend {
   display: flex;
+
   justify-content: space-around;
   align-items: center;
 
@@ -603,123 +920,187 @@
   padding: 0;
   margin: 0;
 
-  font-size: 10px;
+  font-size: 9px;
+
   color: #475569;
 }
 
-.chart-legend li {
+.stock-risk-page .chart-legend li {
   display: flex;
+
   align-items: center;
-  gap: 4px;
+
+  gap: 3px;
 }
 
-.dot {
+.stock-risk-page .dot {
   display: inline-block;
 
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
 
   border-radius: 50%;
+
+  flex-shrink: 0;
 }
 
-.dot.urgent {
+.stock-risk-page .dot.urgent {
   background-color: #ef4444;
 }
 
-.dot.warning {
+.stock-risk-page .dot.warning {
   background-color: #f59e0b;
 }
 
-.dot.normal {
+.stock-risk-page .dot.normal {
   background-color: #06b6d4;
 }
 
-.chart-legend .count {
+.stock-risk-page .chart-legend .count {
   font-weight: 700;
 }
 
+
 /* =========================================================
-   11. 반복 결품 TOP 6
+   20. 결품 집중 TOP 6
    ========================================================= */
-.top-ranking-list {
+
+.stock-risk-page .top-ranking-list {
   display: flex;
   flex-direction: column;
-  gap: 7px;
+
+  gap: 6px;
+
+  width: 100%;
 }
 
-.ranking-item {
+.stock-risk-page .ranking-item {
   position: relative;
 
-  min-height: 31px;
+  min-height: 30px;
 
-  padding: 7px 9px;
+  padding: 6px 8px;
 
   background: #f8fafc;
-  border-radius: 6px;
+
+  border-radius: 5px;
 
   overflow: hidden;
+
   box-sizing: border-box;
 }
 
-.rank-info {
+.stock-risk-page .rank-info {
   display: flex;
+
   justify-content: space-between;
   align-items: center;
 
   position: relative;
+
   z-index: 2;
 
-  font-size: 10px;
+  min-width: 0;
+
+  font-size: 9px;
   line-height: 1.2;
 }
 
-.rank-info span {
+.stock-risk-page .rank-info span {
   min-width: 0;
 
   color: #334155;
 
   white-space: nowrap;
+
   overflow: hidden;
+
   text-overflow: ellipsis;
 }
 
-.rank-info strong {
+.stock-risk-page .rank-info strong {
   flex-shrink: 0;
 
-  margin-left: 8px;
+  margin-left: 7px;
 
   color: #ef4444;
-  font-size: 10px;
+
+  font-size: 9px;
 }
 
-.rank-bar {
+.stock-risk-page .rank-bar {
   position: absolute;
 
   top: 0;
   left: 0;
   bottom: 0;
 
-  background-color: rgba(239, 68, 68, 0.08);
+  background-color:
+    rgba(239, 68, 68, 0.08);
 
   z-index: 1;
 }
 
+
 /* =========================================================
-   12. 공통 유틸
+   21. 결품 현황
    ========================================================= */
-.text-danger {
+
+.stock-risk-page .stockout-summary {
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+}
+
+.stock-risk-page .stockout-summary-row {
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
+
+  min-height: 28px;
+
+  padding: 5px 7px;
+
+  background: #f8fafc;
+
+  border-radius: 5px;
+
+  box-sizing: border-box;
+}
+
+.stock-risk-page .stockout-summary-row span {
+  font-size: 9px;
+
+  color: #64748b;
+}
+
+.stock-risk-page .stockout-summary-row strong {
+  font-size: 11px;
+
+  color: #1e293b;
+}
+
+
+/* =========================================================
+   22. 공통 유틸
+   ========================================================= */
+
+.stock-risk-page .text-danger {
   color: #ef4444;
 }
 
-.font-bold {
+.stock-risk-page .font-bold {
   font-weight: 700;
 }
 
+
 /* =========================================================
-   13. 이 페이지에서 스크롤 차단
-   주의: html/body 전체를 건드리지 않고
-         품질 위험 페이지에만 적용
+   23. 스크롤바 숨김
+   기능은 유지하고 시각적으로만 숨김
    ========================================================= */
+
 .stock-risk-page,
 .stock-risk-page * {
   scrollbar-width: none;
@@ -731,47 +1112,201 @@
   height: 0;
 }
 
+
 /* =========================================================
-   14. 화면이 작아질 때
+   24. 화면 높이가 낮은 경우
    ========================================================= */
-@media (max-width: 1200px) {
+
+@media (max-height: 800px) {
+
   .stock-risk-page {
-    padding: 12px 14px 16px;
+    padding-top: 9px;
+    padding-bottom: 10px;
   }
 
-  .dashboard-main-layout {
-    grid-template-columns: minmax(0, 2.5fr) minmax(280px, 1fr);
+  .stock-risk-page .dashboard-header {
+    margin-bottom: 7px;
   }
 
-  .filter-search-bar {
-    gap: 10px;
+  .stock-risk-page .header-title-group h1 {
+    font-size: 17px;
   }
 
-  .search-group input {
-    width: 190px;
+  .stock-risk-page .kpi-cards-grid {
+    margin-bottom: 7px;
   }
 
-  .risk-data-table {
-    font-size: 10px;
+  .stock-risk-page .kpi-card {
+    padding-top: 8px;
+    padding-bottom: 8px;
   }
 
-  .risk-data-table th,
-  .risk-data-table td {
+  .stock-risk-page .kpi-value {
+    font-size: 19px;
+  }
+
+  .stock-risk-page .filter-search-bar {
+    margin-bottom: 7px;
+
+    padding-top: 7px;
+    padding-bottom: 7px;
+  }
+
+  .stock-risk-page .risk-data-table td {
+    height: 36px;
+
+    font-size: 9px;
+  }
+
+  .stock-risk-page .table-product-info strong {
+    font-size: 9px;
+  }
+
+  .stock-risk-page .donut-chart-placeholder {
+    width: 100px;
+    height: 100px;
+
+    margin-bottom: 7px;
+  }
+
+  .stock-risk-page .sidebar-card {
+    padding: 10px;
+  }
+}
+
+
+/* =========================================================
+   25. 화면 폭이 줄어드는 경우
+   ========================================================= */
+
+@media (max-width: 1200px) {
+
+  .stock-risk-page {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .stock-risk-page .dashboard-main-layout {
+    grid-template-columns:
+      minmax(0, 2.5fr)
+      minmax(280px, 1fr);
+  }
+
+  .stock-risk-page .filter-search-bar {
+    gap: 9px;
+  }
+
+  .stock-risk-page .search-group input {
+    width: 180px;
+  }
+
+  .stock-risk-page .risk-data-table th,
+  .stock-risk-page .risk-data-table td {
     padding-left: 6px;
     padding-right: 6px;
   }
 }
 
+
+/* =========================================================
+   26. 태블릿 / 작은 화면
+   ========================================================= */
+
 @media (max-width: 900px) {
-  .kpi-cards-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  .stock-risk-page {
+    height: auto;
+    min-height: 100dvh;
+
+    overflow-y: auto;
   }
 
-  .dashboard-main-layout {
+  .stock-risk-page .kpi-cards-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .stock-risk-page .dashboard-main-layout {
     grid-template-columns: 1fr;
+
+    flex: none;
+
+    overflow: visible;
   }
 
-  .dashboard-sidebar {
+  .stock-risk-page .dashboard-sidebar {
     display: none;
+  }
+
+  .stock-risk-page .table-panel {
+    min-height: 500px;
+  }
+}
+
+
+/* =========================================================
+   27. 아주 작은 화면
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+  .stock-risk-page {
+    padding: 10px;
+  }
+
+  .stock-risk-page .dashboard-header {
+    flex-direction: column;
+
+    gap: 7px;
+  }
+
+  .stock-risk-page .header-badge-group {
+    width: 100%;
+
+    justify-content: space-between;
+  }
+
+  .stock-risk-page .kpi-cards-grid {
+    grid-template-columns: 1fr;
+
+    gap: 7px;
+  }
+
+  .stock-risk-page .filter-search-bar {
+    flex-direction: column;
+
+    align-items: stretch;
+
+    gap: 8px;
+  }
+
+  .stock-risk-page .filter-group select,
+  .stock-risk-page .search-group input {
+    width: 100%;
+  }
+
+  .stock-risk-page .status-filter-buttons {
+    width: 100%;
+  }
+
+  .stock-risk-page .status-filter-buttons button {
+    flex: 1;
+  }
+
+  .stock-risk-page .dashboard-main-layout {
+    min-height: 500px;
+  }
+
+  .stock-risk-page .table-panel {
+    padding: 9px;
+  }
+
+  .stock-risk-page .risk-data-table {
+    min-width: 760px;
+  }
+
+  .stock-risk-page .data-table-container {
+    overflow-x: auto;
+    overflow-y: auto;
   }
 }

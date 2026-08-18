@@ -11,15 +11,17 @@
   min-height: 0;
 
   /*
-   * 아래쪽 여백 최소화
+   * 좌우 여백 유지
+   * 아래쪽 여백만 최소화
    */
   padding: 0 15px 2px;
 
   /*
-   * 스크롤바 제거
-   * 5개 항목을 한 화면에 표시
+   * 스크롤바 없이 표시
    */
   overflow: hidden;
+
+  box-sizing: border-box;
 }
 
 
@@ -29,15 +31,15 @@
 
 .risk-row {
   /*
-   * 기존 54px → 42px
-   * 5개 항목이 패널 안에 들어가도록 축소
+   * 기존 42px → 46px
+   * 너무 압축되어 보이지 않도록 약간 확대
    */
-  min-height: 42px;
+  min-height: 46px;
 
   /*
-   * 행 내부 여백 축소
+   * 행 내부 여백
    */
-  padding: 4px 0;
+  padding: 5px 0;
 
   border-top: 1px solid #edf0f4;
 
@@ -73,7 +75,9 @@
 
   font-size: 12px;
 
-  line-height: 1.1;
+  line-height: 1.15;
+
+  font-weight: 700;
 
   white-space: nowrap;
 
@@ -115,15 +119,18 @@
 
   align-items: center;
 
-  gap: 6px;
+  gap: 7px;
 
   flex-shrink: 0;
 }
+
 
 .risk-values span:not(.badge) {
   display: inline;
 
   margin: 0;
+
+  color: #718096;
 
   font-size: 10px;
 
@@ -153,9 +160,9 @@
   }
 
   .risk-row {
-    min-height: 44px;
+    min-height: 46px;
 
-    padding: 4px 0;
+    padding: 5px 0;
   }
 
   .risk-row strong {
@@ -164,6 +171,10 @@
 
   .risk-row span:not(.badge) {
     font-size: 9px;
+  }
+
+  .risk-values {
+    gap: 6px;
   }
 
   .risk-values span:not(.badge) {
@@ -198,6 +209,8 @@
     width: 100%;
 
     justify-content: space-between;
+
+    gap: 6px;
   }
 
   .risk-row strong {

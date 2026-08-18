@@ -10,16 +10,15 @@ import {
 } from "recharts";
 
 import { getProductChartData } from "../../utils/dashboard";
-import { getProductName } from "../../utils/formatters"; // 유틸리티 함수 임포트
+import { getProductName } from "../../utils/formatters";
 import "./styles/ProductOrderChart.css";
 
 export default function ProductOrderChart({ data }) {
   const rawChartData = getProductChartData(data);
 
-  // 데이터 안의 product_id를 한글 이름으로 변환해서 새 배열 생성
   const chartData = rawChartData.map((item) => ({
     ...item,
-    product_id: getProductName(item.product_id), // 한글 이름으로 교체
+    product_id: getProductName(item.product_id),
   }));
 
   return (
@@ -36,57 +35,93 @@ export default function ProductOrderChart({ data }) {
           <BarChart
             data={chartData}
             margin={{
-              top: 10,
-              right: 20,
-              left: 10,
-              bottom: 50,
+              top: 4,
+              right: 8,
+              left: 0,
+              bottom: 42,
             }}
+            barCategoryGap="18%"
           >
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid
+              strokeDasharray="3 3"
+              vertical={false}
+              stroke="#e2e8f0"
+            />
 
+            {/* X축 */}
             <XAxis
               dataKey="product_id"
               interval={0}
               angle={-25}
               textAnchor="end"
-              height={70}
-              tick={{ fontSize: 11 }}
+              height={52}
+              tick={{
+                fontSize: 9,
+                fill: "#64748b",
+              }}
+              axisLine={{
+                stroke: "#cbd5e1",
+              }}
+              tickLine={false}
             />
 
+            {/* Y축 */}
             <YAxis
-              tick={{ fontSize: 11 }}
+              width={52}
+              tick={{
+                fontSize: 9,
+                fill: "#64748b",
+              }}
+              axisLine={false}
+              tickLine={false}
             />
 
             <Tooltip
               formatter={(value) =>
                 `${Number(value).toLocaleString()}개`
               }
+              contentStyle={{
+                fontSize: "10px",
+                borderRadius: "7px",
+                border: "1px solid #e2e8f0",
+                boxShadow:
+                  "0 4px 12px rgba(15, 23, 42, 0.08)",
+              }}
             />
 
-            <Legend />
+            <Legend
+              verticalAlign="bottom"
+              align="center"
+              height={24}
+              iconSize={10}
+              wrapperStyle={{
+                fontSize: "10px",
+                paddingTop: "2px",
+              }}
+            />
 
-            {/* 예측수요 - 파란색 */}
             <Bar
               dataKey="predicted_demand"
               name="예측수요"
               fill="#3B82F6"
-              radius={[3, 3, 0, 0]}
+              radius={[2, 2, 0, 0]}
+              maxBarSize={12}
             />
 
-            {/* 리드타임 수요 - 주황색 */}
             <Bar
               dataKey="lead_time_demand"
               name="리드타임 수요"
               fill="#F59E0B"
-              radius={[3, 3, 0, 0]}
+              radius={[2, 2, 0, 0]}
+              maxBarSize={12}
             />
 
-            {/* 권장발주량 - 보라색 */}
             <Bar
               dataKey="order_qty_90"
               name="권장발주량"
               fill="#8B5CF6"
-              radius={[3, 3, 0, 0]}
+              radius={[2, 2, 0, 0]}
+              maxBarSize={12}
             />
           </BarChart>
         </ResponsiveContainer>

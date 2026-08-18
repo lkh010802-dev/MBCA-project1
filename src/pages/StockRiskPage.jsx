@@ -7,58 +7,200 @@ import {
 } from "../utils/formatters";
 import "./styles/StockRiskPage.css";
 
-export default function StockRiskPage({ data, martType = "A마트" }) {
-  const rows = data ? getRiskRows(data) : [];
+export default function StockRiskPage({
+  data,
+  martType = "A마트",
+}) {
+  // =========================================================
+  // 기본 데이터
+  //
+  // 중요:
+  // 품절 위험 페이지에서는 전체 기간의 데이터를
+  // 현재 상태처럼 사용하면 안 됩니다.
+  //
+  // 가능한 경우 data 원본 배열을 그대로 사용합니다.
+  // 기존 구조가 배열이 아닌 경우에만 getRiskRows를 fallback으로 사용합니다.
+  // =========================================================
+  const rows = useMemo(() => {
+    if (!data) return [];
 
-  // ==========================================
+    // 일반적인 현재 프로젝트 구조
+    if (Array.isArray(data)) {
+      return data;
+    }
+
+    // 혹시 data.rows 구조인 경우
+    if (Array.isArray(data.rows)) {
+      return data.rows;
+    }
+
+    // 혹시 data.data 구조인 경우
+    if (Array.isArray(data.data)) {
+      return data.data;
+    }
+
+    // 혹시 data.records 구조인 경우
+    if (Array.isArray(data.records)) {
+      return data.records;
+    }
+
+    // 기존 구조 fallback
+    const fallback = getRiskRows(data);
+
+    return Array.isArray(fallback)
+      ? fallback
+      : [];
+  }, [data]);
+
+  // =========================================================
+  // 숫자 변환
+  // =========================================================
+  const toNumber = (value, defaultValue = 0) => {
+    const number = Number(value);
+
+    return Number.isFinite(number)
+      ? number
+      : defaultValue;
+  };
+
+  // =========================================================
+  // 날짜 변환
+  // =========================================================
+  const normalizeDate = (value) => {
+    if (!value) return "";
+
+    const text = String(value).trim();
+
+    if (
+      !/^\d{4}-\d{2}-\d{2}$/.test(text)
+    ) {
+      return "";
+    }
+
+    return text;
+  };
+
+  // =========================================================
   // 데이터셋 기준일
-  // 가장 최근 date 자동 계산
-  // ==========================================
+  //
+  // 전체 데이터 중 가장 최근 날짜
+  // =========================================================
   const latestDate = useMemo(() => {
     if (!rows.length) return "";
 
     const dates = rows
-      .map((row) => row?.date)
-      .filter(Boolean)
-      .map((date) => String(date).trim())
-      .filter((date) => /^\d{4}-\d{2}-\d{2}$/.test(date));
+      .map((row) =>
+        normalizeDate(row?.date)
+      )
+      .filter(Boolean);
 
     if (!dates.length) return "";
 
-    return dates.sort((a, b) => a.localeCompare(b)).at(-1);
+    return [...new Set(dates)]
+      .sort((a, b) =>
+        a.localeCompare(b)
+      )
+      .at(-1);
   }, [rows]);
 
-  // ==========================================
+  // =========================================================
+  // 현재 재고 상태
+  //
+  // 중요:
+  // 전체 과거 데이터를 현재 상태로 사용하지 않습니다.
+  //
+  // 가장 최근 기준일의
+  // 매장 + 상품 데이터를 현재 상태로 사용합니다.
+  // =========================================================
+  const latestRows = useMemo(() => {
+    if (!rows.length || !latestDate) {
+      return [];
+    }
+
+    const currentRows = rows.filter(
+      (row) =>
+        normalizeDate(row?.date) ===
+        latestDate
+    );
+
+    // 혹시 같은 날짜에 동일 매장/상품이
+    // 중복으로 존재한다면 마지막 행 하나만 사용
+    const uniqueMap = new Map();
+
+    currentRows.forEach((row, index) => {
+      const key = [
+        String(row?.store_id ?? ""),
+        String(row?.product_id ?? ""),
+      ].join("|");
+
+      uniqueMap.set(
+        key,
+        {
+          ...row,
+          originalIndex: index,
+        }
+      );
+    });
+
+    return [...uniqueMap.values()];
+  }, [rows, latestDate]);
+
+  // =========================================================
   // 매장 목록
-  // 현재 선택된 데이터셋에서 자동 생성
-  // ==========================================
+  // =========================================================
   const stores = useMemo(() => {
     const storeIds = [
       ...new Set(
-        rows
+        latestRows
           .map((row) => row?.store_id)
-          .filter(Boolean)
-          .map((id) => String(id).trim())
+          .filter(
+            (id) =>
+              id !== null &&
+              id !== undefined &&
+              String(id).trim() !== ""
+          )
+          .map((id) =>
+            String(id).trim()
+          )
       ),
     ];
 
-    return storeIds.sort((a, b) => a.localeCompare(b));
-  }, [rows]);
+    return storeIds.sort((a, b) =>
+      a.localeCompare(
+        b,
+        undefined,
+        {
+          numeric: true,
+        }
+      )
+    );
+  }, [latestRows]);
 
+  // =========================================================
   // 상태 관리
-  const [filterType, setFilterType] = useState("all");
-  const [selectedStore, setSelectedStore] = useState("all");
-  const [searchQuery, setSearchQuery] = useState("");
+  // =========================================================
+  const [filterType, setFilterType] =
+    useState("all");
 
-  // 마트가 변경되면 매장 필터 초기화
+  const [selectedStore, setSelectedStore] =
+    useState("all");
+
+  const [searchQuery, setSearchQuery] =
+    useState("");
+
+  // =========================================================
+  // 마트 변경 시 필터 초기화
+  // =========================================================
   useEffect(() => {
     setSelectedStore("all");
     setFilterType("all");
     setSearchQuery("");
   }, [martType]);
 
-  // 데이터셋 자체가 변경될 때
-  // 현재 선택된 매장이 존재하지 않으면 전체 매장으로 초기화
+  // =========================================================
+  // 데이터 변경 시
+  // 현재 선택 매장이 존재하지 않으면 전체 매장
+  // =========================================================
   useEffect(() => {
     if (
       selectedStore !== "all" &&
@@ -66,227 +208,758 @@ export default function StockRiskPage({ data, martType = "A마트" }) {
     ) {
       setSelectedStore("all");
     }
-  }, [stores, selectedStore]);
+  }, [
+    stores,
+    selectedStore,
+  ]);
 
-  // ==========================================
-  // 필터링 및 검색
-  // ==========================================
-  const filteredRows = rows.filter((row) => {
-    const isUrgent =
-      row.stock_level_start <= row.reorder_point_90 ||
-      row.reorder_flag_90 === 1;
+  // =========================================================
+  // 위험 상태 계산
+  //
+  // 기존 문제:
+  //
+  // 전체 상품을
+  // 30% / 40% / 30%
+  // 또는
+  // 30% / 70%
+  // 로 강제로 나누면
+  // 실제 재고 상태와 관계없는 위험도가 만들어집니다.
+  //
+  // 현재 로직:
+  //
+  // 1. 재고 <= 0
+  //    → 긴급
+  //
+  // 2. 현재 재고 <= 안전재고
+  //    → 긴급
+  //
+  // 3. 발주 필요(reorder_flag_90=1)이면서
+  //    최근 결품도 발생
+  //    → 긴급
+  //
+  // 4. reorder_flag_90=1
+  //    → 주의
+  //
+  // 5. 그 외
+  //    → 정상
+  //
+  // 이 방식은 이미 데이터셋에서 계산된
+  // 안전재고 / 재주문점 / 발주 필요 여부를 사용합니다.
+  // =========================================================
+  const classifiedRows = useMemo(() => {
+    return latestRows.map((row) => {
+      // -----------------------------------------------------
+      // 현재 재고
+      // -----------------------------------------------------
+      const currentStock = Math.max(
+        0,
+        Math.round(
+          toNumber(
+            row.stock_level_start
+          )
+        )
+      );
 
-    if (filterType === "urgent" && !isUrgent) {
-      return false;
-    }
+      // -----------------------------------------------------
+      // 재주문점
+      // -----------------------------------------------------
+      const reorderPoint = Math.max(
+        0,
+        toNumber(
+          row.reorder_point_90
+        )
+      );
 
-    if (
-      selectedStore !== "all" &&
-      String(row.store_id) !== selectedStore
-    ) {
-      return false;
-    }
+      // -----------------------------------------------------
+      // 안전재고
+      // -----------------------------------------------------
+      const safetyStock = Math.max(
+        0,
+        toNumber(
+          row.safety_stock_90
+        )
+      );
 
-    if (searchQuery.trim() !== "") {
-      const prodName = getProductName(row.product_id).toLowerCase();
-      const prodId = String(row.product_id).toLowerCase();
-      const query = searchQuery.trim().toLowerCase();
+      // -----------------------------------------------------
+      // 최근 결품 수량
+      //
+      // 이것은 "횟수"가 아니라 수량입니다.
+      // -----------------------------------------------------
+      const lostSales = Math.max(
+        0,
+        Math.round(
+          toNumber(
+            row.lost_sales_qty
+          )
+        )
+      );
+
+      // -----------------------------------------------------
+      // 데이터셋이 계산한 발주 필요 여부
+      // -----------------------------------------------------
+      const reorderFlag =
+        toNumber(
+          row.reorder_flag_90
+        ) > 0;
+
+      // -----------------------------------------------------
+      // 권장 발주량
+      //
+      // order_qty_90이 존재하면 이것을 사용.
+      // 없으면 재주문점 - 현재재고를 fallback으로 사용.
+      // -----------------------------------------------------
+      let orderQty = Math.max(
+        0,
+        Math.round(
+          toNumber(
+            row.order_qty_90
+          )
+        )
+      );
 
       if (
-        !prodName.includes(query) &&
-        !prodId.includes(query)
+        orderQty === 0 &&
+        reorderPoint > currentStock
       ) {
-        return false;
+        orderQty = Math.max(
+          0,
+          Math.round(
+            reorderPoint -
+              currentStock
+          )
+        );
       }
+
+      // -----------------------------------------------------
+      // 재고 비율
+      //
+      // 화면 분석용으로만 보관
+      // 위험도 분류의 핵심 기준은 아님
+      // -----------------------------------------------------
+      const stockRatio =
+        reorderPoint > 0
+          ? currentStock /
+            reorderPoint
+          : 1;
+
+      // -----------------------------------------------------
+      // 위험 상태
+      // -----------------------------------------------------
+      let riskStatus = "normal";
+
+      // 1. 완전 품절
+      if (currentStock <= 0) {
+        riskStatus = "urgent";
+      }
+
+      // 2. 안전재고 이하
+      else if (
+        safetyStock > 0 &&
+        currentStock <= safetyStock
+      ) {
+        riskStatus = "urgent";
+      }
+
+      // 3. 발주 필요 + 결품 발생
+      else if (
+        reorderFlag &&
+        lostSales > 0
+      ) {
+        riskStatus = "urgent";
+      }
+
+      // 4. 발주 필요
+      else if (reorderFlag) {
+        riskStatus = "warning";
+      }
+
+      // 5. 정상
+      else {
+        riskStatus = "normal";
+      }
+
+      return {
+        ...row,
+
+        currentStock,
+        reorderPoint,
+        safetyStock,
+        lostSales,
+        reorderFlag,
+        orderQty,
+        stockRatio,
+
+        riskStatus,
+      };
+    });
+  }, [latestRows]);
+
+  // =========================================================
+  // 상태 라벨
+  // =========================================================
+  const getStatusLabel = (
+    status
+  ) => {
+    switch (status) {
+      case "urgent":
+        return "긴급";
+
+      case "warning":
+        return "주의";
+
+      case "normal":
+        return "정상";
+
+      default:
+        return "정상";
+    }
+  };
+
+  // =========================================================
+  // Badge 타입
+  // =========================================================
+  const getBadgeType = (
+    status
+  ) => {
+    switch (status) {
+      case "urgent":
+        return "danger";
+
+      case "warning":
+        return "warning";
+
+      case "normal":
+        return "success";
+
+      default:
+        return "success";
+    }
+  };
+
+  // =========================================================
+  // KPI - 긴급
+  // =========================================================
+  const urgentCount = useMemo(() => {
+    return classifiedRows.filter(
+      (row) =>
+        row.riskStatus ===
+        "urgent"
+    ).length;
+  }, [classifiedRows]);
+
+  // =========================================================
+  // KPI - 주의
+  // =========================================================
+  const warningCount = useMemo(() => {
+    return classifiedRows.filter(
+      (row) =>
+        row.riskStatus ===
+        "warning"
+    ).length;
+  }, [classifiedRows]);
+
+  // =========================================================
+  // KPI - 정상
+  // =========================================================
+  const normalCount = useMemo(() => {
+    return classifiedRows.filter(
+      (row) =>
+        row.riskStatus ===
+        "normal"
+    ).length;
+  }, [classifiedRows]);
+
+  // =========================================================
+  // 총 보충 필요 수량
+  //
+  // 중요:
+  //
+  // 단순히
+  // reorder_point - stock
+  // 을 더하는 것보다
+  //
+  // 데이터셋에서 이미 계산된
+  // order_qty_90을 사용하는 것이
+  // 실제 발주 의사결정에 더 적합합니다.
+  // =========================================================
+  const totalOrderQty = useMemo(() => {
+    return classifiedRows.reduce(
+      (total, row) =>
+        total + row.orderQty,
+      0
+    );
+  }, [classifiedRows]);
+
+  // =========================================================
+  // 최근 30일 범위
+  // =========================================================
+  const recent30Rows = useMemo(() => {
+    if (!rows.length || !latestDate) {
+      return [];
     }
 
-    return true;
-  });
+    const latestTime = new Date(
+      `${latestDate}T00:00:00`
+    ).getTime();
 
-  // ==========================================
-  // KPI 요약
-  // ==========================================
-  const urgentCount = rows.filter(
-    (row) =>
-      row.stock_level_start <= row.reorder_point_90 ||
-      row.reorder_flag_90 === 1
-  ).length;
+    const startTime =
+      latestTime -
+      29 * 24 * 60 * 60 * 1000;
 
-  const normalCount = rows.length - urgentCount;
+    return rows.filter(
+      (row) => {
+        const date =
+          normalizeDate(
+            row?.date
+          );
 
-  const totalDeficit = rows.reduce((acc, row) => {
-    const diff = Math.round(
-      row.reorder_point_90 - row.stock_level_start
+        if (!date) return false;
+
+        const time = new Date(
+          `${date}T00:00:00`
+        ).getTime();
+
+        return (
+          time >= startTime &&
+          time <= latestTime
+        );
+      }
     );
+  }, [
+    rows,
+    latestDate,
+  ]);
 
-    return acc + (diff > 0 ? diff : 0);
-  }, 0);
+  // =========================================================
+  // 최근 30일 결품 집계
+  //
+  // store + product 기준
+  //
+  // lost_sales_qty:
+  //   최근 30일 결품 수량 합계
+  //
+  // stockoutDays:
+  //   결품이 실제 발생한 날짜 수
+  //
+  // 이렇게 해야
+  // "반복 결품"을 제대로 판단할 수 있습니다.
+  // =========================================================
+  const stockoutAggregates =
+    useMemo(() => {
+      const map = new Map();
 
-  const repeatedStockoutCount = rows.filter(
-    (row) => (row.lost_sales_qty || 0) > 0
-  ).length;
+      recent30Rows.forEach(
+        (row) => {
+          const storeId =
+            String(
+              row?.store_id ??
+                ""
+            ).trim();
 
-  // ==========================================
-  // 반복 결품 TOP 6
-  // ==========================================
-  const topRankingRows = [...rows]
-    .sort(
-      (a, b) =>
-        (b.lost_sales_qty || 0) -
-        (a.lost_sales_qty || 0)
-    )
-    .slice(0, 6);
+          const productId =
+            String(
+              row?.product_id ??
+                ""
+            ).trim();
 
+          if (
+            !storeId ||
+            !productId
+          ) {
+            return;
+          }
+
+          const key =
+            `${storeId}|${productId}`;
+
+          if (!map.has(key)) {
+            map.set(
+              key,
+              {
+                store_id:
+                  storeId,
+
+                product_id:
+                  productId,
+
+                lostSales30d: 0,
+
+                stockoutDays: 0,
+              }
+            );
+          }
+
+          const item =
+            map.get(key);
+
+          const lostSales =
+            Math.max(
+              0,
+              Math.round(
+                toNumber(
+                  row?.lost_sales_qty
+                )
+              )
+            );
+
+          item.lostSales30d +=
+            lostSales;
+
+          if (
+            lostSales > 0
+          ) {
+            item.stockoutDays +=
+              1;
+          }
+        }
+      );
+
+      return [...map.values()];
+    }, [recent30Rows]);
+
+  // =========================================================
+  // 최근 30일 결품 발생 상품 수
+  //
+  // 결품 수량이 1개라도 발생한
+  // 매장 + 상품 조합
+  // =========================================================
+  const stockoutProductCount =
+    useMemo(() => {
+      return stockoutAggregates.filter(
+        (item) =>
+          item.lostSales30d > 0
+      ).length;
+    }, [
+      stockoutAggregates,
+    ]);
+
+  // =========================================================
+  // 반복 결품 상품
+  //
+  // 30일 동안 2일 이상 결품 발생
+  // =========================================================
+  const repeatedStockoutCount =
+    useMemo(() => {
+      return stockoutAggregates.filter(
+        (item) =>
+          item.stockoutDays >= 2
+      ).length;
+    }, [
+      stockoutAggregates,
+    ]);
+
+  // =========================================================
+  // 결품 집중 TOP 6
+  //
+  // 최근 30일 결품 수량이 많은 순서
+  // =========================================================
+  const topRankingRows =
+    useMemo(() => {
+      return [...stockoutAggregates]
+        .filter(
+          (item) =>
+            item.lostSales30d > 0
+        )
+        .sort(
+          (a, b) =>
+            b.lostSales30d -
+            a.lostSales30d
+        )
+        .slice(0, 6);
+    }, [
+      stockoutAggregates,
+    ]);
+
+  // =========================================================
+  // TOP 6 최대 결품량
+  // =========================================================
   const maxLostSales =
-    topRankingRows.length > 0
-      ? topRankingRows[0].lost_sales_qty || 1
-      : 1;
+    useMemo(() => {
+      if (
+        !topRankingRows.length
+      ) {
+        return 1;
+      }
 
+      return Math.max(
+        1,
+        topRankingRows[0]
+          .lostSales30d
+      );
+    }, [
+      topRankingRows,
+    ]);
+
+  // =========================================================
+  // 필터링
+  // =========================================================
+  const filteredRows =
+    useMemo(() => {
+      const query =
+        searchQuery
+          .trim()
+          .toLowerCase();
+
+      return classifiedRows.filter(
+        (row) => {
+          // -------------------------------------------------
+          // 위험 상태
+          // -------------------------------------------------
+          if (
+            filterType !==
+              "all" &&
+            row.riskStatus !==
+              filterType
+          ) {
+            return false;
+          }
+
+          // -------------------------------------------------
+          // 매장
+          // -------------------------------------------------
+          if (
+            selectedStore !==
+              "all" &&
+            String(
+              row.store_id
+            ) !==
+              selectedStore
+          ) {
+            return false;
+          }
+
+          // -------------------------------------------------
+          // 상품 검색
+          // -------------------------------------------------
+          if (query !== "") {
+            const productName =
+              getProductName(
+                row.product_id
+              ).toLowerCase();
+
+            const productId =
+              String(
+                row.product_id
+              ).toLowerCase();
+
+            if (
+              !productName.includes(
+                query
+              ) &&
+              !productId.includes(
+                query
+              )
+            ) {
+              return false;
+            }
+          }
+
+          return true;
+        }
+      );
+    }, [
+      classifiedRows,
+      filterType,
+      selectedStore,
+      searchQuery,
+    ]);
+
+  // =========================================================
+  // 화면
+  // =========================================================
   return (
     <div className="stock-risk-page">
 
-      {/* ==========================================
+      {/* =====================================================
           상단 타이틀
-          ========================================== */}
+          ===================================================== */}
       <header className="dashboard-header">
+
         <div className="header-title-group">
 
-          {/* A마트 / B마트 자동 변경 */}
           <span className="breadcrumb">
             SmartOrder · {martType}
           </span>
 
-          {/* A마트 / B마트 자동 변경 */}
-          <h1>{martType} 품절 위험</h1>
+          <h1>
+            {martType} 품절 위험
+          </h1>
 
           <p>
-            매장·상품별 위험 신호와 예상 부족 수량을
-            한 화면에서 확인합니다.
+            매장·상품별 현재 재고 위험과
+            보충 필요 수량을 확인합니다.
           </p>
+
         </div>
 
         <div className="header-badge-group">
 
-          <button className="monitor-link-btn">
+          <button
+            className="monitor-link-btn"
+          >
             위험 모니터링
           </button>
 
-          {/* 데이터셋의 가장 최근 날짜 */}
           <span className="기준일">
-            기준일 {latestDate || "-"}
+            기준일{" "}
+            {latestDate || "-"}
           </span>
 
         </div>
+
       </header>
 
 
-      {/* ==========================================
-          상단 요약 KPI
-          ========================================== */}
+      {/* =====================================================
+          KPI
+          ===================================================== */}
       <section className="kpi-cards-grid">
 
+        {/* 긴급 */}
         <div className="kpi-card urgent">
+
           <span className="kpi-label">
             긴급 상품
           </span>
 
           <div className="kpi-value">
-            <strong>{urgentCount.toLocaleString()}</strong>
+
+            <strong>
+              {urgentCount.toLocaleString()}
+            </strong>
+
             {" "}개
+
           </div>
 
           <span className="kpi-desc">
-            즉시 발주 검토
+            품절·안전재고 이하·결품 동반 발주 필요
           </span>
+
         </div>
 
 
+        {/* 주의 */}
         <div className="kpi-card warning">
+
           <span className="kpi-label">
             주의 상품
           </span>
 
           <div className="kpi-value">
-            <strong>0</strong>
-            {" "}개
-          </div>
 
-          <span className="kpi-desc">
-            재고 추이 확인
-          </span>
-        </div>
-
-
-        <div className="kpi-card">
-          <span className="kpi-label">
-            예상 총 부족
-          </span>
-
-          <div className="kpi-value">
             <strong>
-              {totalDeficit.toLocaleString()}
+              {warningCount.toLocaleString()}
             </strong>
+
             {" "}개
+
           </div>
 
           <span className="kpi-desc">
-            현재 목표재고 기준
+            재주문점 이하로 발주 검토 필요
           </span>
+
         </div>
 
 
+        {/* 총 보충 필요 */}
         <div className="kpi-card">
+
           <span className="kpi-label">
-            반복 결품 집중 상품
+            총 보충 필요 수량
           </span>
 
           <div className="kpi-value">
+
+            <strong>
+              {totalOrderQty.toLocaleString()}
+            </strong>
+
+            {" "}개
+
+          </div>
+
+          <span className="kpi-desc">
+            권장 발주량 기준
+          </span>
+
+        </div>
+
+
+        {/* 결품 발생 */}
+        <div className="kpi-card">
+
+          <span className="kpi-label">
+            반복 결품 상품
+          </span>
+
+          <div className="kpi-value">
+
             <strong>
               {repeatedStockoutCount.toLocaleString()}
             </strong>
+
             {" "}개
+
           </div>
 
           <span className="kpi-desc">
-            결품 발생 상품 기준
+            최근 30일 결품 2일 이상 발생
           </span>
+
         </div>
 
       </section>
 
 
-      {/* ==========================================
-          필터 및 검색
-          ========================================== */}
+      {/* =====================================================
+          필터
+          ===================================================== */}
       <section className="filter-search-bar">
 
         <div className="filter-group">
-          <label>매장</label>
+
+          <label>
+            매장
+          </label>
 
           <select
             value={selectedStore}
             onChange={(e) =>
-              setSelectedStore(e.target.value)
+              setSelectedStore(
+                e.target.value
+              )
             }
           >
+
             <option value="all">
               전체 매장
             </option>
 
-            {stores.map((storeId) => (
-              <option
-                key={storeId}
-                value={storeId}
-              >
-                {getStoreName(storeId)}
-              </option>
-            ))}
+            {stores.map(
+              (storeId) => (
+                <option
+                  key={storeId}
+                  value={storeId}
+                >
+                  {getStoreName(
+                    storeId
+                  )}
+                </option>
+              )
+            )}
+
           </select>
+
         </div>
 
 
         <div className="filter-group">
-          <label>위험 상태</label>
+
+          <label>
+            위험 상태
+          </label>
 
           <div className="status-filter-buttons">
 
@@ -316,28 +989,51 @@ export default function StockRiskPage({ data, martType = "A마트" }) {
               긴급
             </button>
 
-            <button className="disabled">
+            <button
+              className={
+                filterType === "warning"
+                  ? "active"
+                  : ""
+              }
+              onClick={() =>
+                setFilterType("warning")
+              }
+            >
               주의
             </button>
 
-            <button className="disabled">
+            <button
+              className={
+                filterType === "normal"
+                  ? "active"
+                  : ""
+              }
+              onClick={() =>
+                setFilterType("normal")
+              }
+            >
               정상
             </button>
 
           </div>
+
         </div>
 
 
         <div className="search-group">
 
-          <label>상품 검색</label>
+          <label>
+            상품 검색
+          </label>
 
           <input
             type="text"
             placeholder="상품명 또는 상품 ID"
             value={searchQuery}
             onChange={(e) =>
-              setSearchQuery(e.target.value)
+              setSearchQuery(
+                e.target.value
+              )
             }
           />
 
@@ -346,14 +1042,15 @@ export default function StockRiskPage({ data, martType = "A마트" }) {
       </section>
 
 
-      {/* ==========================================
-          메인 콘텐츠
-          ========================================== */}
+      {/* =====================================================
+          메인
+          ===================================================== */}
       <div className="dashboard-main-layout">
 
-        {/* ==========================================
-            좌측 : 상품별 품절 위험
-            ========================================== */}
+
+        {/* ===================================================
+            상품별 품절 위험
+            =================================================== */}
         <section className="panel table-panel">
 
           <div className="panel-header-row">
@@ -363,8 +1060,11 @@ export default function StockRiskPage({ data, martType = "A마트" }) {
             </h3>
 
             <span className="sub-count">
+
               {filteredRows.length.toLocaleString()}
+
               개 상품이 조회되었습니다.
+
             </span>
 
           </div>
@@ -375,103 +1075,184 @@ export default function StockRiskPage({ data, martType = "A마트" }) {
             <table className="risk-data-table">
 
               <thead>
+
                 <tr>
-                  <th>상품</th>
-                  <th>매장</th>
-                  <th>상태</th>
-                  <th>현재 재고</th>
-                  <th>권장 재고</th>
-                  <th>예상 부족</th>
-                  <th>예상 품절일</th>
-                  <th>최근 결품</th>
+
+                  <th>
+                    상품
+                  </th>
+
+                  <th>
+                    매장
+                  </th>
+
+                  <th>
+                    상태
+                  </th>
+
+                  <th>
+                    현재 재고
+                  </th>
+
+                  <th>
+                    안전재고
+                  </th>
+
+                  <th>
+                    재주문점
+                  </th>
+
+                  <th>
+                    보충 필요
+                  </th>
+
+                  <th>
+                    기준일
+                  </th>
+
+                  <th>
+                    최근 결품
+                  </th>
+
                 </tr>
+
               </thead>
 
 
               <tbody>
 
-                {filteredRows.length === 0 ? (
+                {filteredRows.length ===
+                0 ? (
 
                   <tr>
+
                     <td
-                      colSpan="8"
+                      colSpan="9"
                       className="empty-row"
                     >
-                      조건에 해당하는 품절 위험
-                      상품이 없습니다.
+                      조건에 해당하는
+                      품절 위험 상품이
+                      없습니다.
                     </td>
+
                   </tr>
 
                 ) : (
 
-                  filteredRows.map((row) => {
+                  filteredRows.map(
+                    (row) => (
 
-                    const deficit =
-                      Math.round(
-                        row.reorder_point_90 -
-                        row.stock_level_start
-                      );
-
-                    return (
                       <tr
-                        key={`${row.date}-${row.store_id}-${row.product_id}`}
+                        key={`${row.date}-${row.store_id}-${row.product_id}-${row.originalIndex}`}
                       >
 
+                        {/* 상품 */}
                         <td>
+
                           <div className="table-product-info">
+
                             <strong>
                               {getProductName(
                                 row.product_id
                               )}
                             </strong>
+
                           </div>
+
                         </td>
 
+
+                        {/* 매장 */}
                         <td>
+
                           {getStoreName(
                             row.store_id
                           )}
+
                         </td>
 
+
+                        {/* 상태 */}
                         <td>
-                          <Badge type="danger">
-                            긴급
+
+                          <Badge
+                            type={getBadgeType(
+                              row.riskStatus
+                            )}
+                          >
+                            {getStatusLabel(
+                              row.riskStatus
+                            )}
                           </Badge>
+
                         </td>
 
+
+                        {/* 현재 재고 */}
                         <td>
+
+                          {row.currentStock.toLocaleString()}
+
+                        </td>
+
+
+                        {/* 안전재고 */}
+                        <td>
+
                           {Math.round(
-                            row.stock_level_start
+                            row.safetyStock
                           ).toLocaleString()}
+
                         </td>
 
+
+                        {/* 재주문점 */}
                         <td>
+
                           {Math.round(
-                            row.reorder_point_90
+                            row.reorderPoint
                           ).toLocaleString()}
+
                         </td>
 
-                        <td className="text-danger font-bold">
-                          -
-                          {deficit > 0
-                            ? deficit.toLocaleString()
-                            : 0}
+
+                        {/* 보충 필요 */}
+                        <td
+                          className={
+                            row.orderQty > 0
+                              ? "text-danger font-bold"
+                              : ""
+                          }
+                        >
+
+                          {row.orderQty > 0
+                            ? `+${row.orderQty.toLocaleString()}`
+                            : "0"}
+
                         </td>
 
+
+                        {/* 기준일 */}
                         <td>
+
                           {row.date || "-"}
+
                         </td>
 
+
+                        {/* 최근 결품 */}
                         <td>
-                          {Math.round(
-                            row.lost_sales_qty || 0
-                          )}
-                          회 / 30일
+
+                          {row.lostSales.toLocaleString()}
+
+                          {" "}개
+
                         </td>
 
                       </tr>
-                    );
-                  })
+
+                    )
+                  )
 
                 )}
 
@@ -484,13 +1265,15 @@ export default function StockRiskPage({ data, martType = "A마트" }) {
         </section>
 
 
-        {/* ==========================================
+        {/* ===================================================
             우측 사이드바
-            ========================================== */}
+            =================================================== */}
         <aside className="dashboard-sidebar">
 
 
-          {/* 위험 상태 분포 */}
+          {/* =================================================
+              위험 상태 분포
+              ================================================= */}
           <div className="sidebar-card">
 
             <h4>
@@ -498,7 +1281,7 @@ export default function StockRiskPage({ data, martType = "A마트" }) {
             </h4>
 
             <span className="sidebar-sub">
-              전체 상품 기준
+              최신 기준일 상품 기준
             </span>
 
 
@@ -507,7 +1290,7 @@ export default function StockRiskPage({ data, martType = "A마트" }) {
               <div className="donut-center-text">
 
                 <strong>
-                  {rows.length.toLocaleString()}
+                  {classifiedRows.length.toLocaleString()}
                 </strong>
 
                 <span>
@@ -522,30 +1305,41 @@ export default function StockRiskPage({ data, martType = "A마트" }) {
             <ul className="chart-legend">
 
               <li>
+
                 <span className="dot urgent"></span>
-                {" "}긴급
-                {" "}
+
+                {" "}긴급{" "}
+
                 <span className="count">
                   {urgentCount.toLocaleString()}
                 </span>
+
               </li>
 
+
               <li>
+
                 <span className="dot warning"></span>
-                {" "}주의
-                {" "}
+
+                {" "}주의{" "}
+
                 <span className="count">
-                  0
+                  {warningCount.toLocaleString()}
                 </span>
+
               </li>
 
+
               <li>
+
                 <span className="dot normal"></span>
-                {" "}정상
-                {" "}
+
+                {" "}정상{" "}
+
                 <span className="count">
                   {normalCount.toLocaleString()}
                 </span>
+
               </li>
 
             </ul>
@@ -553,67 +1347,167 @@ export default function StockRiskPage({ data, martType = "A마트" }) {
           </div>
 
 
-          {/* 반복 결품 TOP 6 */}
+          {/* =================================================
+              결품 집중 TOP 6
+              ================================================= */}
           <div className="sidebar-card">
 
             <h4>
-              반복 결품 TOP 6
+              결품 집중 TOP 6
             </h4>
 
             <span className="sidebar-sub">
-              최근 30일 발생 빈도
+              최근 30일 결품 수량 기준
             </span>
 
 
             <div className="top-ranking-list">
 
-              {topRankingRows.map((row) => {
+              {topRankingRows.length ===
+              0 ? (
 
-                const percentage = Math.round(
-                  ((row.lost_sales_qty || 0) /
-                    maxLostSales) *
-                    100
-                );
+                <div className="empty-ranking">
+                  최근 30일 결품 발생 상품이 없습니다.
+                </div>
 
-                return (
-                  <div
-                    className="ranking-item"
-                    key={`${row.store_id}-${row.product_id}`}
-                  >
+              ) : (
 
-                    <div className="rank-info">
+                topRankingRows.map(
+                  (item) => {
 
-                      <span>
-                        {getProductName(
-                          row.product_id
-                        )}
-                        {" "}
+                    const percentage =
+                      Math.round(
                         (
-                        {getStoreName(
-                          row.store_id
-                        )}
-                        )
-                      </span>
+                          item.lostSales30d /
+                          maxLostSales
+                        ) *
+                        100
+                      );
 
-                      <strong>
-                        {Math.round(
-                          row.lost_sales_qty || 0
-                        )}
-                        회
-                      </strong>
+                    return (
 
-                    </div>
+                      <div
+                        className="ranking-item"
+                        key={`${item.store_id}-${item.product_id}`}
+                      >
 
-                    <div
-                      className="rank-bar"
-                      style={{
-                        width: `${percentage}%`,
-                      }}
-                    />
+                        <div className="rank-info">
 
-                  </div>
-                );
-              })}
+                          <span>
+
+                            {getProductName(
+                              item.product_id
+                            )}
+
+                            {" "}
+
+                            (
+                            {getStoreName(
+                              item.store_id
+                            )}
+                            )
+
+                          </span>
+
+                          <strong>
+
+                            {item.lostSales30d.toLocaleString()}
+
+                            {" "}개
+
+                          </strong>
+
+                        </div>
+
+
+                        <div
+                          className="rank-bar"
+                          style={{
+                            width: `${percentage}%`,
+                          }}
+                        />
+
+                      </div>
+
+                    );
+                  }
+                )
+
+              )}
+
+            </div>
+
+          </div>
+
+
+          {/* =================================================
+              결품 현황
+              ================================================= */}
+          <div className="sidebar-card">
+
+            <h4>
+              결품 현황
+            </h4>
+
+            <span className="sidebar-sub">
+              최근 30일 기준
+            </span>
+
+
+            <div className="stockout-summary">
+
+
+              <div className="stockout-summary-row">
+
+                <span>
+                  결품 발생 상품
+                </span>
+
+                <strong>
+                  {stockoutProductCount.toLocaleString()}
+                </strong>
+
+              </div>
+
+
+              <div className="stockout-summary-row">
+
+                <span>
+                  반복 결품 상품
+                </span>
+
+                <strong>
+                  {repeatedStockoutCount.toLocaleString()}
+                </strong>
+
+              </div>
+
+
+              <div className="stockout-summary-row">
+
+                <span>
+                  결품 수량
+                </span>
+
+                <strong>
+
+                  {stockoutAggregates
+                    .reduce(
+                      (
+                        total,
+                        item
+                      ) =>
+                        total +
+                        item.lostSales30d,
+                      0
+                    )
+                    .toLocaleString()}
+
+                  {" "}개
+
+                </strong>
+
+              </div>
 
             </div>
 
