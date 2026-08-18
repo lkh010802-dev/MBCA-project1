@@ -1,0 +1,51 @@
+/* ==========================================
+   재고 상태 분포 차트
+   ========================================== */
+
+.inventory-chart-box {
+  width: 100%;
+  height: 220px;
+
+  /* 패널 내부 여백 제거 */
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+
+/* Recharts 영역 */
+.inventory-chart-box .recharts-responsive-container {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+
+/* 차트 SVG */
+.inventory-chart-box .recharts-surface {
+  overflow: visible;
+}
+
+
+/* 범례 */
+.inventory-chart-box .recharts-legend-wrapper {
+  bottom: 0 !important;
+}
+
+
+/* 툴팁 */
+.inventory-chart-box .recharts-tooltip-wrapper {
+  outline: none;
+}
+
+
+/* 모바일 */
+@media (max-width: 760px) {
+  .inventory-chart-box {
+    height: 210px;
+  }
+}

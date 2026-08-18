@@ -1,0 +1,777 @@
+/* =========================================================
+   0. 페이지 전체
+   ========================================================= */
+.stock-risk-page {
+  width: 100%;
+  max-width: 100%;
+  height: 100vh;
+  min-height: 0;
+
+  padding: 16px 20px 20px;
+  margin: 0;
+
+  box-sizing: border-box;
+  overflow: hidden;
+
+  background-color: #f8fafc;
+  color: #1e293b;
+
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+}
+
+/* =========================================================
+   1. 상단 헤더
+   ========================================================= */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  width: 100%;
+  margin-bottom: 12px;
+
+  box-sizing: border-box;
+}
+
+.header-title-group {
+  min-width: 0;
+}
+
+.header-title-group .breadcrumb {
+  display: block;
+
+  margin-bottom: 3px;
+
+  font-size: 11px;
+  line-height: 1.2;
+  font-weight: 600;
+  color: #7c3aed;
+}
+
+.header-title-group h1 {
+  margin: 0 0 3px;
+
+  font-size: 20px;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.header-title-group p {
+  margin: 0;
+
+  font-size: 11px;
+  line-height: 1.3;
+  color: #64748b;
+}
+
+.header-badge-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.monitor-link-btn {
+  height: 30px;
+  padding: 0 11px;
+
+  background-color: #fff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+
+  color: #475569;
+  font-size: 11px;
+  font-weight: 600;
+
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.monitor-link-btn:hover {
+  background-color: #f8fafc;
+}
+
+.기준일 {
+  font-size: 11px;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   2. KPI 카드
+   ========================================================= */
+.kpi-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+
+  width: 100%;
+  margin-bottom: 12px;
+
+  box-sizing: border-box;
+}
+
+.kpi-card {
+  min-width: 0;
+
+  padding: 13px 16px;
+
+  background: #fff;
+  border-radius: 9px;
+  border: 1px solid #e2e8f0;
+
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+
+  box-sizing: border-box;
+}
+
+.kpi-card.urgent {
+  border-left: 4px solid #ef4444;
+}
+
+.kpi-card.warning {
+  border-left: 4px solid #f59e0b;
+}
+
+.kpi-label {
+  display: block;
+
+  margin-bottom: 5px;
+
+  font-size: 11px;
+  line-height: 1.2;
+  color: #64748b;
+}
+
+.kpi-value {
+  margin: 0 0 3px;
+
+  font-size: 22px;
+  line-height: 1.15;
+  color: #1e293b;
+}
+
+.kpi-value strong {
+  font-weight: 700;
+}
+
+.kpi-desc {
+  font-size: 10px;
+  line-height: 1.2;
+  color: #94a3b8;
+}
+
+/* =========================================================
+   3. 필터 / 검색
+   ========================================================= */
+.filter-search-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 10px 14px;
+
+  background: #fff;
+  border-radius: 9px;
+  border: 1px solid #e2e8f0;
+
+  box-sizing: border-box;
+}
+
+.filter-group,
+.search-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  min-width: 0;
+}
+
+.filter-group label,
+.search-group label {
+  font-size: 10px;
+  line-height: 1.2;
+  font-weight: 600;
+  color: #475569;
+}
+
+.filter-group select,
+.search-group input {
+  height: 28px;
+
+  padding: 0 9px;
+
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+
+  font-size: 11px;
+  color: #1e293b;
+  background-color: #fff;
+
+  outline: none;
+  box-sizing: border-box;
+}
+
+.search-group input {
+  width: 220px;
+}
+
+.status-filter-buttons {
+  display: flex;
+  gap: 4px;
+}
+
+.status-filter-buttons button {
+  height: 28px;
+
+  padding: 0 11px;
+
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+
+  background-color: #fff;
+  color: #64748b;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.status-filter-buttons button:hover:not(.disabled) {
+  background-color: #f8fafc;
+}
+
+.status-filter-buttons button.active {
+  background-color: #7c3aed;
+  color: #fff;
+  border-color: #7c3aed;
+}
+
+.status-filter-buttons button.disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* =========================================================
+   4. 메인 레이아웃
+   ========================================================= */
+.dashboard-main-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2.7fr) minmax(300px, 1fr);
+  gap: 14px;
+
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* =========================================================
+   5. 테이블 패널
+   ========================================================= */
+.table-panel {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+
+  padding: 14px;
+
+  background: #fff;
+  border-radius: 9px;
+  border: 1px solid #e2e8f0;
+
+  box-sizing: border-box;
+
+  /* 내부 스크롤 제거 */
+  height: auto;
+  overflow: hidden;
+}
+
+.panel-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 9px;
+}
+
+.panel-header-row h3 {
+  margin: 0;
+
+  font-size: 14px;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.sub-count {
+  flex-shrink: 0;
+
+  font-size: 10px;
+  line-height: 1.2;
+  color: #64748b;
+}
+
+/* =========================================================
+   6. 위험 테이블
+   ========================================================= */
+.risk-data-table {
+  width: 100%;
+
+  border-collapse: collapse;
+  border-spacing: 0;
+
+  table-layout: fixed;
+
+  text-align: left;
+  font-size: 11px;
+
+  box-sizing: border-box;
+}
+
+/* 컬럼 폭을 안정적으로 유지 */
+.risk-data-table th:nth-child(1) { width: 18%; }
+.risk-data-table th:nth-child(2) { width: 10%; }
+.risk-data-table th:nth-child(3) { width: 9%; }
+.risk-data-table th:nth-child(4) { width: 11%; }
+.risk-data-table th:nth-child(5) { width: 11%; }
+.risk-data-table th:nth-child(6) { width: 12%; }
+.risk-data-table th:nth-child(7) { width: 13%; }
+.risk-data-table th:nth-child(8) { width: 16%; }
+
+.risk-data-table th {
+  height: 30px;
+
+  padding: 6px 8px;
+
+  background-color: #f8fafc;
+  color: #475569;
+
+  font-size: 10px;
+  line-height: 1.1;
+  font-weight: 600;
+
+  border-bottom: 1px solid #e2e8f0;
+
+  box-sizing: border-box;
+}
+
+.risk-data-table td {
+  height: 43px;
+
+  padding: 6px 8px;
+
+  border-bottom: 1px solid #f1f5f9;
+
+  color: #334155;
+
+  font-size: 10px;
+  line-height: 1.2;
+
+  vertical-align: middle;
+
+  box-sizing: border-box;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.risk-data-table tr:hover {
+  background-color: #f8fafc;
+}
+
+/* 상품명 + 상품코드 */
+.table-product-info {
+  min-width: 0;
+}
+
+.table-product-info strong {
+  display: block;
+
+  margin-bottom: 1px;
+
+  color: #1e293b;
+
+  font-size: 10px;
+  line-height: 12px;
+  font-weight: 600;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.table-product-info span {
+  display: block;
+
+  font-size: 9px;
+  line-height: 10px;
+  color: #64748b;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.empty-row {
+  height: 100px !important;
+
+  text-align: center;
+
+  color: #94a3b8;
+
+  padding: 20px !important;
+}
+
+/* =========================================================
+   7. 상태 배지
+   JSX에서 별도 class가 있다면 그대로 사용
+   ========================================================= */
+.risk-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 34px;
+  height: 19px;
+
+  padding: 0 6px;
+
+  border-radius: 5px;
+
+  font-size: 9px;
+  line-height: 1;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+/* =========================================================
+   8. 페이지네이션
+   ========================================================= */
+.inventory-pagination,
+.risk-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+
+  height: 28px;
+  margin-top: 7px;
+}
+
+.pagination-btn {
+  min-width: 26px;
+  height: 26px;
+
+  padding: 0 7px;
+
+  border: 1px solid #cbd5e1;
+  border-radius: 5px;
+
+  background: #fff;
+  color: #475569;
+
+  font-size: 10px;
+  font-weight: 500;
+
+  cursor: pointer;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background: #f8fafc;
+}
+
+.pagination-btn.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* =========================================================
+   9. 우측 사이드바
+   ========================================================= */
+.dashboard-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+
+  box-sizing: border-box;
+
+  overflow: hidden;
+}
+
+.sidebar-card {
+  width: 100%;
+  min-width: 0;
+
+  padding: 14px;
+
+  background: #fff;
+  border-radius: 9px;
+  border: 1px solid #e2e8f0;
+
+  box-sizing: border-box;
+
+  overflow: hidden;
+}
+
+.sidebar-card h4 {
+  margin: 0 0 2px;
+
+  font-size: 13px;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.sidebar-sub {
+  display: block;
+
+  margin-bottom: 10px;
+
+  font-size: 9px;
+  line-height: 1.2;
+  color: #64748b;
+}
+
+/* =========================================================
+   10. 도넛 차트
+   ========================================================= */
+.donut-chart-placeholder {
+  width: 125px;
+  height: 125px;
+
+  margin: 0 auto 12px;
+
+  border: 11px solid #06b6d4;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  position: relative;
+  box-sizing: border-box;
+}
+
+.donut-center-text {
+  text-align: center;
+}
+
+.donut-center-text strong {
+  display: block;
+
+  font-size: 18px;
+  line-height: 1.1;
+  color: #1e293b;
+}
+
+.donut-center-text span {
+  font-size: 9px;
+  color: #64748b;
+}
+
+.chart-legend {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
+  list-style: none;
+
+  padding: 0;
+  margin: 0;
+
+  font-size: 10px;
+  color: #475569;
+}
+
+.chart-legend li {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dot {
+  display: inline-block;
+
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+}
+
+.dot.urgent {
+  background-color: #ef4444;
+}
+
+.dot.warning {
+  background-color: #f59e0b;
+}
+
+.dot.normal {
+  background-color: #06b6d4;
+}
+
+.chart-legend .count {
+  font-weight: 700;
+}
+
+/* =========================================================
+   11. 반복 결품 TOP 6
+   ========================================================= */
+.top-ranking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.ranking-item {
+  position: relative;
+
+  min-height: 31px;
+
+  padding: 7px 9px;
+
+  background: #f8fafc;
+  border-radius: 6px;
+
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.rank-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  position: relative;
+  z-index: 2;
+
+  font-size: 10px;
+  line-height: 1.2;
+}
+
+.rank-info span {
+  min-width: 0;
+
+  color: #334155;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rank-info strong {
+  flex-shrink: 0;
+
+  margin-left: 8px;
+
+  color: #ef4444;
+  font-size: 10px;
+}
+
+.rank-bar {
+  position: absolute;
+
+  top: 0;
+  left: 0;
+  bottom: 0;
+
+  background-color: rgba(239, 68, 68, 0.08);
+
+  z-index: 1;
+}
+
+/* =========================================================
+   12. 공통 유틸
+   ========================================================= */
+.text-danger {
+  color: #ef4444;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+/* =========================================================
+   13. 이 페이지에서 스크롤 차단
+   주의: html/body 전체를 건드리지 않고
+         품질 위험 페이지에만 적용
+   ========================================================= */
+.stock-risk-page,
+.stock-risk-page * {
+  scrollbar-width: none;
+}
+
+.stock-risk-page::-webkit-scrollbar,
+.stock-risk-page *::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/* =========================================================
+   14. 화면이 작아질 때
+   ========================================================= */
+@media (max-width: 1200px) {
+  .stock-risk-page {
+    padding: 12px 14px 16px;
+  }
+
+  .dashboard-main-layout {
+    grid-template-columns: minmax(0, 2.5fr) minmax(280px, 1fr);
+  }
+
+  .filter-search-bar {
+    gap: 10px;
+  }
+
+  .search-group input {
+    width: 190px;
+  }
+
+  .risk-data-table {
+    font-size: 10px;
+  }
+
+  .risk-data-table th,
+  .risk-data-table td {
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+}
+
+@media (max-width: 900px) {
+  .kpi-cards-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboard-main-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-sidebar {
+    display: none;
+  }
+}

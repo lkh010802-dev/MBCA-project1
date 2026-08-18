@@ -1,0 +1,127 @@
+{
+  "metadata": {
+    "serviceRows": 9100,
+    "serviceStart": "2023-11-01",
+    "serviceEnd": "2024-01-30",
+    "interpretation": "기술통계이며 인과효과 또는 잠재수요 추정치가 아닙니다.",
+    "rawRows": 76000,
+    "stockoutProxyDefinition": "Inventory Level > 0 and Units Sold >= Inventory Level"
+  },
+  "promotion": [
+    {
+      "label": "프로모션 미적용",
+      "averageDemand": 94.046,
+      "rows": 6100
+    },
+    {
+      "label": "프로모션 적용",
+      "averageDemand": 122.571,
+      "rows": 3000
+    }
+  ],
+  "discount": [
+    {
+      "label": "0%",
+      "averageDemand": 94.14,
+      "rows": 2066
+    },
+    {
+      "label": "11% 이상",
+      "averageDemand": 122.599,
+      "rows": 2270
+    },
+    {
+      "label": "1~5%",
+      "averageDemand": 93.857,
+      "rows": 2034
+    },
+    {
+      "label": "6~10%",
+      "averageDemand": 101.721,
+      "rows": 2730
+    }
+  ],
+  "region": [
+    {
+      "label": "남부",
+      "averageDemand": 105.354,
+      "rows": 1820
+    },
+    {
+      "label": "동부",
+      "averageDemand": 106.425,
+      "rows": 1820
+    },
+    {
+      "label": "북부",
+      "averageDemand": 102.343,
+      "rows": 3640
+    },
+    {
+      "label": "서부",
+      "averageDemand": 100.785,
+      "rows": 1820
+    }
+  ],
+  "category": [
+    {
+      "label": "가구",
+      "averageDemand": 74.737,
+      "rows": 1638
+    },
+    {
+      "label": "식료품",
+      "averageDemand": 115.982,
+      "rows": 3640
+    },
+    {
+      "label": "완구",
+      "averageDemand": 90.273,
+      "rows": 1274
+    },
+    {
+      "label": "의류",
+      "averageDemand": 118.959,
+      "rows": 1456
+    },
+    {
+      "label": "전자제품",
+      "averageDemand": 99.439,
+      "rows": 1092
+    }
+  ],
+  "season": [
+    {
+      "label": "Autumn",
+      "averageDemand": 103.423,
+      "rows": 18200
+    },
+    {
+      "label": "Spring",
+      "averageDemand": 97.703,
+      "rows": 18400
+    },
+    {
+      "label": "Summer",
+      "averageDemand": 112.855,
+      "rows": 18400
+    },
+    {
+      "label": "Winter",
+      "averageDemand": 103.406,
+      "rows": 21000
+    }
+  ],
+  "stockoutRelationship": [
+    {
+      "label": "결품 후보 다음날",
+      "averageDemand": 112.994,
+      "rows": 8241
+    },
+    {
+      "label": "일반 관측 다음날",
+      "averageDemand": 103.266,
+      "rows": 67659
+    }
+  ]
+}

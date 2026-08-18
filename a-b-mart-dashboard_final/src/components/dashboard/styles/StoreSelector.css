@@ -1,0 +1,33 @@
+.store-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 160px;
+}
+
+.store-selector span {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.store-selector select {
+  height: 36px;
+  padding: 0 30px 0 11px;
+  border: 1px solid #d9e0e8;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #182230;
+  cursor: pointer;
+}
+
+@media (max-width: 760px) {
+  .store-selector {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .store-selector select {
+    width: 100%;
+  }
+}
